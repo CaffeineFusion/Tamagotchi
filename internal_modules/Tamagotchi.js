@@ -1,6 +1,7 @@
 'use strict';
 
 // var fs = require('fs');
+var databaseFacade = new (require('./MockDB.js'))();
 
 /**
 * Primary class. Instantiating creates a Tamagotchi object
@@ -39,12 +40,6 @@ function die() {
 * Privately scoped state
 **/
 var __state = {
-	'health':100,
-	'hunger':0,
-	'tiredness':0,
-	'bladder':0,
-	'age':0,
-	'name':'',
 	'heartbeat':null
 };
 

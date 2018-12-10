@@ -15,25 +15,29 @@ var database = {
 			'hunger':0,
 			'tiredness':0,
 			'bladder':0,
-			'age':0,
-			'heartbeat':null
+			'age':0
 	//	}
 	//]
 };
 
-function get(id = 1) => {
-	return Promise((resolve, reject)=>{
-		if(database) resolve(database);
-		else reject({'message':'No Tamgotchi ' + id + ' found!'});
-	});
+
+
+module.exports = class MockDB {
+
+	constructor() {
+	}
+
+	get(id = 1) {
+		return Promise((resolve, reject)=>{
+			if(database) resolve(database);
+			else reject({'message':'No Tamgotchi ' + id + ' found!'});
+		});
+	}
+
+	update(id = 1, d) {
+		return Promise((resolve, reject) => {
+			//TODO: Dangerous. Implement write locking/queueing?
+			database = d;
+			resolve(database);
+		});
 }
-
-function update(id = 1, d) => {
-	return Promise((resolve, reject) => {
-		//TODO: Dangerous. Implement write locking.
-		database = d;
-		resolve(database);
-	});
-}
-
-
