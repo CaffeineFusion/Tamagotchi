@@ -1,1 +1,45 @@
 'use strict';
+
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
+var assert = chai.assert;
+var expect = chai.expect;
+
+// Note: We'll use the base include "Tamagotchi" to test the privately scoped functions. 
+//       and instantiate Tamagotchi as "tamagotchi" to test the publicly scoped functions.
+var Tamagotchi = require("../../internal_modules/Tamagotchi.js");
+//var tamagotchi = new Tamagotchi();
+
+chai.use(chaiAsPromised);
+chai.should();
+
+const statTemplate = {'hunger':0.5,
+	'tiredness':0.5,
+	'bladder':0.5,
+	'age':0.01
+}
+const defaultTamagotchi = {'id':1,
+	'name':'',
+	'health':100,
+	'hunger':0,
+	'tiredness':0,
+	'bladder':0,
+	'age':0 
+};
+
+
+
+describe('Tamagotchi.update()', function() {
+
+    it('Should update the Tamagotchi state by a given amount', function() {
+        var expectedOutput = {'id':1,
+			'name':'',
+			'health':100,
+			'hunger':0.5,
+			'tiredness':0.5,
+			'bladder':0.5,
+			'age':0.01 };
+
+        return expect(Tamagotchi.update().should.eventually.deep.equal(expectedOutput));
+    });
+});

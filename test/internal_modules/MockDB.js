@@ -1,3 +1,5 @@
+'use strict';
+
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var assert = chai.assert;
@@ -25,9 +27,8 @@ describe('MockDB.get()', function() {
 });
 
 describe('MockDB.set()', function() {
-
     it('Need to write tests', function() {
-        return assert(1===2);
+        return assert.equal(1,2);
     });
 });
 

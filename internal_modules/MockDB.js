@@ -15,7 +15,7 @@ var database = {
 			'hunger':0,
 			'tiredness':0,
 			'bladder':0,
-			'age':0
+			'age':0.00
 	//	}
 	//]
 };
@@ -29,8 +29,10 @@ module.exports = class MockDB {
 
 	get(id = 1) {
 		return new Promise((resolve, reject) => {
-			if(database) resolve(database);
-			else reject({'message':'No Tamgotchi ' + id + ' found!'});
+			console.log('id: ', id);
+			console.log('database: ', database);
+			if(database) return resolve(database);
+			else return reject({'message':'No Tamgotchi ' + id + ' found!'});
 		});
 	}
 
@@ -38,7 +40,7 @@ module.exports = class MockDB {
 		return new Promise((resolve, reject) => {
 			//TODO: Dangerous. Implement write locking/queueing?
 			database = d;
-			resolve(database);
+			return resolve(database);
 		});
 	}
 }
