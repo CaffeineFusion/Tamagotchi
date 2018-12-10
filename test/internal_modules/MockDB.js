@@ -23,3 +23,11 @@ describe('MockDB.get()', function() {
         return expect(dbFacade.get().should.eventually.deep.equal(expectedOutput));
     });
 });
+
+describe('MockDB.set()', function() {
+
+    it('Need to write tests', function() {
+        return assert(1===2);
+    });
+});
+
