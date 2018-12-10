@@ -2,12 +2,10 @@
 
 // var fs = require('fs');
 var databaseFacade = new (require('./MockDB.js'))();
+var jsonHelpers = require('./jsonHelpers.js');
 
 /**
 * Primary class. Instantiating creates a Tamagotchi object
-* 
-* Note on promises -> Because this implementation is synchronous, the promises are not technically required. 
-*    These are included with a view for async server implementation.
 **/
 
 
@@ -17,54 +15,56 @@ var databaseFacade = new (require('./MockDB.js'))();
 **/ 
 
 /**
-* update()
-* 
-* inputs: {id} of Tamagotchi to update, {modifiers} a set of parameters to be modified
-* returns: Promise
-**/
-
-function update(id, modifiers) {
-	//TODO: Unsafe - Not async ready - Not idempotent.
-	//console.log(id, modifiers);
-
-	return databaseFacade.get(id)
-		.then((state) => {
-			var result = state;
-			//console.log(Object.keys(state), Object.keys(modifiers));
-			Object.keys(state).forEach((key) => {
-				//console.log(modifiers[key], state[key]);
-				// TODO: check for empty object. Assumes that the 
-				if(modifiers[key] && modifiers[key] !== null) 
-					result[key] = state[key] + modifiers[key];
-			})
-			return result;
-		})
-		.then((newState) => { return databaseFacade.update(id, newState) });
+ * increment(id, modifiers)	Updates Tamagotchi[{id}] internal state by a certain set of {modifiers}
+ * @param  {int} 	 ID of Tamagotchi
+ * @param  {obj}	 Flat JSON object of existing state
+ * @param  {obj}	 Flat JSON object of keys to increment via value
+ * @return {Promise} 
+ */
+function increment(id, state, modifiers) {
+	return databaseFacade.update(id, jsonHelpers.incrementJSON(state, modifiers));
 }
 
 function get(id) {
-	//console.log('get(', id, ')');
-	return databaseFacade.get(id).then((res) => {
-		//console.log('response: ', res);
-		return res;
-	});
+	return databaseFacade.get(id);
+}
+
+function die(id) {
+	if(__state.heartbeat !== null) {
+		clearInterval(__state.heartbeat);
+		__state.heartbeat = null;
+		return({message: 'Your Tamagotchi has died!'});
+	}
+	else 
+		return({message: 'Your Tamagotchi was already dead!'});
+}
+
+function poop(id, cb) { 
+	return get(id)
+		.then((state) => { 
+			state.bladder = 0;
+			return state;
+		})
+		.then((updatedState) => { databaseFacade.update(id, updatedState); })
+		.then((newState) => { cb({'type':'poop'}); return newState; });
 }
 
 function sleep(id) {
 
 }
 
-function die(id) {
-	return new Promise((resolve, reject) => {
-		if(__state.heartbeat !== null) {
-			__state.heartbeat = null;
-			clearInterval(__state.heartbeat);
-			resolve({message:__state.name + ' has died!'});
-		}
-		else 
-			reject({message:__state.name + ' was already dead!'});
-	});
+function checkForDeath(state) {
+	return (state.hunger >= 100 || state.age >= 100);
 }
+
+function isExhausted(state) {
+	return (state.tiredness >= 80);
+}
+
+function isAwake(state) {
+	return state.isAwake;
+}
+
 
 
 /**
@@ -73,6 +73,8 @@ function die(id) {
 var __state = {
 	'heartbeat':null
 };
+
+
 
 
 /**
@@ -86,21 +88,34 @@ const __updateModifiers = {
 	'age':0.01
 }
 
+
+var __rules = {
+	death: 		(state) => { return (state.hunger >= 100 || state.age >= 100) },
+	exhaustion: (state) => { return (state.tiredness >= 80) },
+	poop: 		(state) => { return (state.bladder > 70) },
+	wake: 		(state) => {  } 
+}
+
+
 // Note: Only one Tamagotchi of ID 1, yet coded to be extensible in the future.
 module.exports = class Tamagotchi {
 
-	constructor() {
-		__state.heartbeat = setInterval( () => { 
-			update(1, __updateModifiers ); 
+	constructor(eventCallback) {
+		__state.heartbeat = setInterval(() => { 
+			get(1)
+				.then((state) => { increment( 1, state, __updateModifiers); })
+				.then((state) => { return (checkForDeath(state) ? die(1, eventCallback) : state); })
+				.then((state) => { return (isExhausted(state) ? sleep(1, eventCallback) : state); })
+				.then((state) => { return (__rules.poop(state) ? poop(1, eventCallback) : state); })
 		}, 1000 );
 	}
 
 	feed() {
-		return update(1, {'hunger':-25});
+		return increment(1, {'hunger':-25});
 	}
 
 	putToBed() {
-		return update(1, {'isSleeping':true});
+		return increment(1, {'isSleeping':true});
 	}
 
 	murder() {
@@ -109,5 +124,9 @@ module.exports = class Tamagotchi {
 
 	getStats() {
 		return get(1);
+	}
+
+	rename(name) {
+		return databaseFacade.update(id, newState);	
 	}
 }

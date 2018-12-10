@@ -2,8 +2,31 @@
 
 // Load custom libraries
 var Tamagotchi = require('./internal_modules/Tamagotchi.js');
-var t = new Tamagotchi();
 
+//Event Handlers
+var onPoop() {
+	console.log('\n\
+     (   )\n\
+  (   ) (\n\
+   ) _   )\n\
+    ( \\_\n\
+  _(_\\ \\)__\n\
+ (____\\___)) \n\
+		)\n');
+} // adapted from http://ascii.co.uk/art/shit
+
+// Callback that connects event handlers to custom triggers
+var cb = (event) => {
+	switch(event.type) {
+		case poop:
+			onPoop();
+			break;
+	}
+};
+
+var t = new Tamagotchi(cb);
+
+// Loading message
 // ascii art generated via: http://patorjk.com/software/taag/#p=display&f=Ogre&t=Tamagotchi
 console.log(' \n\
  _____                                  _       _     _ \n\
@@ -40,6 +63,7 @@ replServer.context.getStatus = () => {t.getStats().then(console.log)};
 replServer.context.putToBed = () => {t.putToBed().then(console.log)};
 replServer.context.murder = () => {t.murder().then(console.log)};     //not for the faint of heart
 
+// Display initial stats followed by basic instructions.
 t.getStats().then(console.log)
 	.then( () => {console.log(instructions);} );
 

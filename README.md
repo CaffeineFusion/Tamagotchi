@@ -1,4 +1,7 @@
+#Tamagotchi
+A simple Tamagotchi simulator.
 
+Built by Owen Smith
 
 ## TODO
 - Set up handling for conflicting writes (eg. Update routine overwriting a new command)
@@ -6,6 +9,9 @@
 - Add decimal-safe numbers
 - Name the Tamagotchi
 - Add eventhandler to bubble up internal output events.
+- Handle DB Promise messages and resolution within Tamagotchi
+- Add Sleep/Awake state
+- Create Set function
 
 ### Wishlist
 - Persistent state storage
@@ -18,17 +24,16 @@ Javascript - Node.JS
 (Note: I've made liberal use of arrow functions, lambdas and Promises)
 
 ### Running the Code
-```
-npm start
-```
+
+`npm start`
+
 On creation, the Tamagotchi runs on a 1 second timer. 
 Three main functions are provided: feed(), putToBed(), and getStatus()
 There is currently no persistent storage. Your furry pet's existence will, sadly, be terminated when the application is closed - but surely you'd never do that, right?
 
 ### Testing the Code
-```
-npm test
-```
+
+`npm test`
 
 ## Design
 
@@ -53,3 +58,8 @@ Chai + Mocha
 
 ## Caveats
 The data updates are not currently idempotent. 
+
+## Naming Conventions
+.js files returning a class are capitalised.
+.js files returning a function/collection of functions are standard camel case.
+Folders utilize underscores.

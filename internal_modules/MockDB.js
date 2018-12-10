@@ -10,12 +10,13 @@ var database = {
 	//'tamigotchis': [
 	//	{
 			'id':1,
-			'name':'',
+			'name':'Tammy',
 			'health':100,
 			'hunger':0,
 			'tiredness':0,
 			'bladder':0,
-			'age':0.00
+			'age':0.00,
+			'awake':true
 	//	}
 	//]
 };

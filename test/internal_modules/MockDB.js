@@ -15,12 +15,13 @@ describe('MockDB.get()', function() {
 
     it('Should return our Tamigotchi internal state', function() {
         var expectedOutput = {'id':1,
-			'name':'',
+			'name':'Tammy',
 			'health':100,
 			'hunger':0,
 			'tiredness':0,
 			'bladder':0,
-			'age':0 };
+			'age':0,
+			'awake':true};
 
         return expect(dbFacade.get().should.eventually.deep.equal(expectedOutput));
     });
