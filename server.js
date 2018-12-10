@@ -7,15 +7,16 @@ console.log(t);
 
 var repl = require('repl');
 var replServer = repl.start({ prompt: "Tamagotchi > " })
-	.rli.on('close', () => { t.murder(); }); //Make sure to terminate Tamagotchi heartbeat on service end.
+	.rli.on('close', () => { t.murder(); }); //Make sure to terminate Tamagotchi heartbeat callback on close.
 
 /**
 * Attach commands to REPL context.
-* TODO: Fix Ctrl-C exit cycle. Add Error handling and prompts.
+* TODO: Add Error handling and prompts.
 **/
 replServer.context.feed = () => {t.feed().then(console.log)};
 replServer.context.status = () => {t.getStats().then(console.log)};
 replServer.context.putToBed = () => {t.putToBed().then(console.log)};
+replServer.context.murder = () => {t.murder().then(console.log)}; 
 
 //var io = process.stdin; //Deprecated method. REPL more straightforward.
 
