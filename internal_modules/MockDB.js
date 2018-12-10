@@ -28,16 +28,17 @@ module.exports = class MockDB {
 	}
 
 	get(id = 1) {
-		return Promise((resolve, reject)=>{
+		return new Promise((resolve, reject) => {
 			if(database) resolve(database);
 			else reject({'message':'No Tamgotchi ' + id + ' found!'});
 		});
 	}
 
 	update(id = 1, d) {
-		return Promise((resolve, reject) => {
+		return new Promise((resolve, reject) => {
 			//TODO: Dangerous. Implement write locking/queueing?
 			database = d;
 			resolve(database);
 		});
+	}
 }
