@@ -29,8 +29,8 @@ module.exports = class MockDB {
 
 	get(id = 1) {
 		return new Promise((resolve, reject) => {
-			console.log('id: ', id);
-			console.log('database: ', database);
+			//console.log('id: ', id);
+			//console.log('database: ', database);
 			if(database) return resolve(database);
 			else return reject({'message':'No Tamgotchi ' + id + ' found!'});
 		});

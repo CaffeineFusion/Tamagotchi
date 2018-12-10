@@ -25,7 +25,7 @@ var databaseFacade = new (require('./MockDB.js'))();
 
 function update(id, modifiers) {
 	//TODO: Unsafe - Not async ready - Not idempotent.
-	console.log(id, modifiers);
+	//console.log(id, modifiers);
 
 	return databaseFacade.get(id)
 		.then((state) => {

@@ -3,7 +3,29 @@
 // Load custom libraries
 var Tamagotchi = require('./internal_modules/Tamagotchi.js');
 var t = new Tamagotchi();
-console.log(t);
+
+// ascii art generated via: http://patorjk.com/software/taag/#p=display&f=Ogre&t=Tamagotchi
+console.log(' \n\
+ _____                                  _       _     _ \n\
+/__   \\__ _ _ __ ___   __ _  __ _  ___ | |_ ___| |__ (_)\n\
+  / /\\/ _` | \'_ ` _ \\ / _` |/ _` |/ _ \\| __/ __| \'_ \\| |\n\
+ / / | (_| | | | | | | (_| | (_| | (_) | || (__| | | | |\n\
+ \\/   \\__,_|_| |_| |_|\\__,_|\\__, |\\___/ \\__\\___|_| |_|_|\n\
+                            |___/                       \n\
+');
+
+const instructions = '\n\
+Welcome to your new Tamagotchi. It has begun to grow even as we speak. \n\
+You can interact with your Tamagotchi by typing the following commands: \n\
+\n\
+feed() : This feeds your Tamagotchi a random item of food (-25 hunger) \n\
+putToBed() : This puts your Tamagotchi to bed allowing it recover energy (-5 tiredness p/s) \n\
+getStatus() : This shows you all the current information about your Tamagotchi \n\
+\n\
+Pressing Ctrl+C will exit the application, putting your Tamagotchi up for adoption.\n\
+Have fun!\n\
+'
+
 
 var repl = require('repl');
 var replServer = repl.start({ prompt: "Tamagotchi > " })
@@ -14,11 +36,17 @@ var replServer = repl.start({ prompt: "Tamagotchi > " })
 * TODO: Add Error handling and prompts.
 **/
 replServer.context.feed = () => {t.feed().then(console.log)};
-replServer.context.status = () => {t.getStats().then(console.log)};
+replServer.context.getStatus = () => {t.getStats().then(console.log)};
 replServer.context.putToBed = () => {t.putToBed().then(console.log)};
-replServer.context.murder = () => {t.murder().then(console.log)}; 
+replServer.context.murder = () => {t.murder().then(console.log)};     //not for the faint of heart
+
+t.getStats().then(console.log)
+	.then( () => {console.log(instructions);} );
+
+
 
 //var io = process.stdin; //Deprecated method. REPL more straightforward.
+
 
 
 
