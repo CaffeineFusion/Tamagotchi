@@ -46,7 +46,7 @@ module.exports.onFeed = (event) => {
 		console.log('Omnomnomnom!');
 
 	}
-};
+}; // ascii adapted from https://www.asciiart.eu/food-and-drinks/other - credit to Riitta Rasimus
 
 
 module.exports.onWake = (event) => {

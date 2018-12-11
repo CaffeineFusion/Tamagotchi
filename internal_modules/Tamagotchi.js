@@ -2,7 +2,7 @@
 
 // var fs = require('fs');
 var databaseFacade = new (require('./MockDB.js'))();
-var jsonHelpers = require('./helpers/jsonHelpers.js');
+var objHelpers = require('./helpers/objHelpers.js');
 
 /**
 * Primary class. Instantiating creates a Tamagotchi object
@@ -22,7 +22,7 @@ var jsonHelpers = require('./helpers/jsonHelpers.js');
  * @return {Promise} 
  */
 function increment(id, state, modifiers) {
-	return databaseFacade.update(id, jsonHelpers.incrementJSON(state, modifiers));
+	return databaseFacade.update(id, objHelpers.increment(state, modifiers));
 }
 
 function getState(id) {
@@ -124,7 +124,7 @@ const __defaultState = {'id':1,
 var __rules = {
 	death: 		(state) => { return (state.hunger >= 100 || state.age >= 100); },
 	exhaustion: (state) => { return (state.tiredness >= 80 && state.awake == true); },
-	poop: 		(state) => { console.log(state); return (state.awake == true && state.bladder > 20); },
+	poop: 		(state) => { return (state.awake == true && state.bladder > 20); },
 	wake: 		(state) => { return (state.awake == false && (state.tiredness <= 0 || state.bladder > 80)); },
 	notHungry:	(state) => { return (state.hunger <= 25 ); }
 };
@@ -141,11 +141,11 @@ module.exports = class Tamagotchi {
 					 * On tick: 1) Get current state. 2) Update state based on modifiers (take into accound sleep).
 					 * 			Check for 3) Death, 4) Exhaustion, 5) Poop
 					 */
-					console.log('heartbeat');
+					//console.log('heartbeat');
 					getState(1)
 						.then((state) => { 
 							//console.log(state);	
-							let modifiers = jsonHelpers.deepCloneJSON(__updateModifiers);
+							let modifiers = objHelpers.deepClone(__updateModifiers);
 							if(state.awake == false) modifiers.tiredness = __sleepModifier.tiredness;
 							//if(__rules.wake(state)) this.awaken();
 							return increment( 1, state, modifiers); 

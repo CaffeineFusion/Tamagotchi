@@ -6,7 +6,7 @@
 * 
 **/
 
-var jsonHelpers = require('./helpers/jsonHelpers.js');
+var objHelpers = require('./helpers/objHelpers.js');
 
 var database = {};
 
@@ -37,6 +37,6 @@ module.exports = class MockDB {
 	 * @return {[type]}   [description]
 	 */
 	create(d) {
-		return this.update(1, jsonHelpers.deepCloneJSON(d));	//DeepClone Required to decouple the database instance from the template object. Otherwise, updating the database would update the template object as well!
+		return this.update(1, objHelpers.deepClone(d));	//DeepClone Required to decouple the database instance from the template object. Otherwise, updating the database would update the template object as well!
 	}
 };

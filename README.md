@@ -13,7 +13,10 @@ Built by Owen Smith
 - Refactor Ternary operators in Tamagotchi
 - Name propagation.
 - Rewrite Tamagotchi state management to ensure that death terminates state update flow.
-- Add Put To Bed functionality
+- Add Put To Bed functionality.
+- Fix feeding whilst asleep and not hungry bug.
+- Move config to config.json.
+
 
 ### Wishlist
 - Persistent state storage
@@ -35,6 +38,27 @@ Javascript - Node.JS
 On creation, the Tamagotchi runs on a 1 second timer. 
 Three main functions are provided: feed(), putToBed(), and getStatus()
 There is currently no persistent storage. Your furry pet's existence will, sadly, be terminated when the application is closed - but surely you'd never do that, right?
+
+The default status update cycle is arbitrarily high for demo purposes.
+
+Rates of change can be found in internal_modules/Tamagotchi.js
+```
+const __updateModifiers = {
+	'hunger':2,
+	'tiredness':10,
+	'bladder':2,
+	'age':0.5
+};
+
+const __sleepModifier = {
+	'tiredness':-5
+};
+```
+
+Tiredness is fast (+10 p/s), to quickly demonstrate the sleep cycle.
+Decreasing age (eg. to 0.2) would run into the limitations of javascript's inbuilt numeric system. It will likely still work, just with odd rounding behaviours. A more flexible approach is out-of-scope for this PoC.
+
+
 
 ### Testing the Code
 

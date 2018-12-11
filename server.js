@@ -60,7 +60,7 @@ var replServer = repl.start({ prompt: 'Tamagotchi > ' })
 * Attach commands to REPL context.
 * TODO: Add Error handling and prompts.
 **/
-replServer.context.feed = () => {console.log('inServer', eventHandlers, eventHandlers.cb); t.feed(eventHandlers.cb);};
+replServer.context.feed = () => {t.feed(eventHandlers.cb);};
 replServer.context.getStatus = () => {t.getStats().then(console.log);};
 replServer.context.putToBed = () => {t.putToBed().then(console.log);};
 replServer.context.murder = () => {t.murder(); console.log('How could you?!?');};     //not for the faint of heart

@@ -1,18 +1,18 @@
 'use strict';
 
 /**
- * incrementJSON - takes a JSON object {a} and increments by the values of corresponding elements in JSON object {b}.
+ * increment - takes an object {a} and increments by the values of corresponding elements in object {b}.
  * 
- * 		This function is only for numeric values.
- * 		TODO: error handling for non-numeric. RegEx: /^[a-zA-Z]+$/	
+ * 		This function is only for numeric values.	
  * 		Warning: Will enumerate over all keys on object. This would include functions.
+ * 		Refactor: Error handling for non-numeric. RegEx: /^[a-zA-Z]+$/
  * 		
  * @param  {object} - key value pairs
  * @param  {object} - key value pairs
  * @return {object}
  */
-module.exports.incrementJSON = (a, b) => {
-	var result = deepCloneJSON(a);	
+module.exports.increment = (a, b) => {
+	var result = deepClone(a);	
 	Object.keys(b).forEach((key) => {
 		//If the key exists in {a}, increment by corresponding value in {b}
 		if(typeof a[key] !== undefined && a[key] !== null) {
@@ -23,13 +23,14 @@ module.exports.incrementJSON = (a, b) => {
 };
 
 /**
- * deepCloneJSON - safely clone an object so as to cleanse link to parent object.
+ * deepClone - safely clone an object so as to cleanse link to parent object.
  * 		Warning: function handling out of scope. Tested for strings and integers.
+ * 		Refactor: A better implementation would adjust the prototypal chain, rather than serialising and deserialising the object.
  * 		
  * @param  {obj} obj A JavaScript Object
  * @return {obj}     A duplicate, but unlinked, object.
  */
-var deepCloneJSON = (obj) => {
+var deepClone = (obj) => {
 	return JSON.parse(JSON.stringify(obj));		// NOTE: Somewhat of a hack - This creates a new copy of an object, breaking the connection to its parent.
 };
-module.exports.deepCloneJSON = deepCloneJSON;
+module.exports.deepClone = deepClone;
