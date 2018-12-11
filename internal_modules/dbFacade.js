@@ -16,11 +16,11 @@ var getState = (id) => {
 };
 module.exports.getState = getState;
 
-module.exports.birth = (defaultState) => {
-	return db.create(defaultState);
+module.exports.create = (record) => {
+	return db.create(record);
 };
 
-module.exports.set = (id, updates) => {
+module.exports.update = (id, updates) => {
 	return getState(id)
 		.then((state) => { return objHelpers.update(state, updates); })
 		.then((updatedState) => { return db.update(id, updatedState); });

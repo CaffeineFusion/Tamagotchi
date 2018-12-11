@@ -1,7 +1,8 @@
 'use strict';
 
 // var fs = require('fs');
-var databaseFacade = new (require('./MockDB.js'))();
+// var db = new (require('./MockDB.js'))();
+var dbFacade = require('./dbFacade.js');
 var objHelpers = require('./helpers/objHelpers.js');
 
 /**
@@ -14,24 +15,11 @@ var objHelpers = require('./helpers/objHelpers.js');
 * === Privately scoped Functions ===
 **/ 
 
-/**
- * increment(id, modifiers)	Updates Tamagotchi[{id}] internal state by a certain set of {modifiers}
- * @param  {int} 	 ID of Tamagotchi
- * @param  {obj}	 Flat JSON object of existing state
- * @param  {obj}	 Flat JSON object of keys to increment via value
- * @return {Promise} 
- */
-function increment(id, state, modifiers) {
-	return databaseFacade.update(id, objHelpers.increment(state, modifiers));
-}
-
-function getState(id) {
-	return databaseFacade.get(id);
-}
 
 function birth(defaultState) {
-	return databaseFacade.create(defaultState);
+	return dbFacade.create(defaultState);
 }
+
 
 function die(id, cb) {
 	if(__state.heartbeat !== null) {
@@ -44,12 +32,7 @@ function die(id, cb) {
 }
 
 function poop(id, cb) { 
-	return getState(id)
-		.then((state) => { 
-			state.bladder = 0;
-			return state;
-		})
-		.then((updatedState) => { return databaseFacade.update(id, updatedState); })
+	return dbFacade.update(id, {'bladder' : 0})
 		.then((newState) => { 
 			cb({'type':'poop'}); 
 			return newState; 
@@ -57,12 +40,7 @@ function poop(id, cb) {
 }
 
 function sleep(id, cb) {
-	return getState(id)
-		.then((state) => { 
-			state.awake = false;
-			return state;
-		})
-		.then((updatedState) => { return databaseFacade.update(id, updatedState); })
+	return dbFacade.update(id, {'awake' : false})
 		.then((newState) => { 
 			cb({'type':'sleep', 'message':'Your Tamagotchi has fallen asleep'}); 
 			return newState; 
@@ -70,18 +48,12 @@ function sleep(id, cb) {
 }
 
 function wake(id, cb) {
-	return getState(id)
-		.then((state) => { 
-			state.awake = true;
-			return state;
-		})
-		.then((updatedState) => { return databaseFacade.update(id, updatedState); })
+	return dbFacade.update(id, {'awake' : true})
 		.then((newState) => { 
 			cb({'type':'wake', 'message':'Your Tamagotchi has woken up'}); 
 			return newState; 
 		});
 }
-
 
 
 /**
@@ -106,6 +78,10 @@ const __sleepModifier = {
 	'tiredness':-5
 };
 
+const __dyingModifier = {
+	'health':-5
+};
+
 const __defaultState = {'id':1,
 	'name':'Tammy',
 	'health':100,
@@ -122,7 +98,8 @@ const __defaultState = {'id':1,
  * @type {Object}
  */
 var __rules = {
-	death: 		(state) => { return (state.hunger >= 100 || state.age >= 100); },
+	death: 		(state) => { return (state.health <= 0 || state.age >= 100); },
+	dying: 		(state) => { return (state.hunger >= 100 || state.bladder >= 100); },
 	exhaustion: (state) => { return (state.tiredness >= 80 && state.awake == true); },
 	poop: 		(state) => { return (state.awake == true && state.bladder > 20); },
 	wake: 		(state) => { return (state.awake == false && (state.tiredness <= 0 || state.bladder > 80)); },
@@ -142,13 +119,14 @@ module.exports = class Tamagotchi {
 					 * 			Check for 3) Death, 4) Exhaustion, 5) Poop
 					 */
 					//console.log('heartbeat');
-					getState(1)
+					dbFacade.getState(1)
 						.then((state) => { 
 							//console.log(state);	
 							let modifiers = objHelpers.deepClone(__updateModifiers);
 							if(state.awake == false) modifiers.tiredness = __sleepModifier.tiredness;
+							if(__rules.dying(state)) modifiers.health = __dyingModifier.health;
 							//if(__rules.wake(state)) this.awaken();
-							return increment( 1, state, modifiers); 
+							return dbFacade.increment( 1, state, modifiers); 
 						})
 						.then((state) => { return (__rules.death(state) ? die(1, eventCallback) : state); })
 						.then((state) => { return (__rules.wake(state) ? wake(1, eventCallback) : state); })
@@ -174,7 +152,7 @@ module.exports = class Tamagotchi {
 	}
 
 	putToBed(cb) {
-		//return increment(1, getState(1), {'isSleeping':true});
+		return dbFacade.update(1, {'awake' : false});
 	}
 
 	awaken(cb) {
@@ -186,12 +164,13 @@ module.exports = class Tamagotchi {
 	}
 
 	getStats() {
-		return getState(1);
+		return dbFacade.getState(1);
 	}
 
 	rename(name) {
-		return getState(1)
+		return dbFacade.update(1, {'name' : name});
+		/*return getState(1)
 			.then((state) => { state.name = name; return state; })
-			.then((newState) => { return databaseFacade.update(1, newState); });	
+			.then((newState) => { return db.update(1, newState); });	*/
 	}
 };

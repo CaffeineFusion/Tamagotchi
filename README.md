@@ -10,6 +10,9 @@ Built by Owen Smith
 - Capable of going to sleep on its own, losing health from hunger and pooping on its own without prompting
 - Capable of aging from birth through to death
 
+### Out-of-scope
+- Add decimal-safe numbers
+
 ## Backlog
 - Set up handling for conflicting writes (eg. Update routine overwriting a new command)
 - Add error handling and prompts
@@ -25,16 +28,14 @@ Built by Owen Smith
 - "losing health from hunger!"
 - Age states
 - Move config to config.json.
+- Update Architecture diagram with DBFacade
+- Update DB with death note.
 
 
 ### Wishlist
 - Persistent state storage
 - Idempotency
 - Rework base data structure for future extensibility
-
-### Out-of-scope
-- Add decimal-safe numbers
-
 
 ## Introduction
 Javascript - Node.JS 
