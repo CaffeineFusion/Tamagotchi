@@ -1,6 +1,6 @@
 'use strict';
 //Event Handlers
-module.exports.onPoop = () => {
+module.exports.onPoop = (event) => {
 	console.log('\n\
          (   )\n\
       (   ) (\n\
@@ -10,7 +10,7 @@ module.exports.onPoop = () => {
      (____\\___)) \n');
 }; // ascii adapted from http://ascii.co.uk/art/shit
 
-module.exports.onDeath = () => {
+module.exports.onDeath = (event) => {
 	console.log('\n\
                   \\__|=\n\
                  (    )\n\

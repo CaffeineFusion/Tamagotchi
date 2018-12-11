@@ -96,9 +96,9 @@ var __state = {
 * Rate of change for Tamagotchi on each heartbeat
 **/
 const __updateModifiers = {
-	'hunger':1,
+	'hunger':2,
 	'tiredness':10,
-	'bladder':1,
+	'bladder':2,
 	'age':0.5
 };
 
@@ -161,7 +161,7 @@ module.exports = class Tamagotchi {
 
 	feed(cb) {
 		return getState(1)
-			.then((state) => { return state.awake == false ? this.awaken() : state; })
+			.then((state) => { return state.awake == false ? this.awaken(cb) : state; })	// Refactor with subhandler for callback. {cb} sufficient for now.
 			.then((state) => { 
 				//If our Tamagotchi is not hungry, callback with a failure message.
 				//Else, feed the Tamagotchi.
@@ -173,7 +173,7 @@ module.exports = class Tamagotchi {
 			});
 	}
 
-	putToBed() {
+	putToBed(cb) {
 		//return increment(1, getState(1), {'isSleeping':true});
 	}
 
@@ -181,7 +181,7 @@ module.exports = class Tamagotchi {
 		return wake(1, cb);
 	}
 
-	murder() {
+	murder(cb) {
 		return die(1, () => {});
 	}
 
@@ -190,6 +190,8 @@ module.exports = class Tamagotchi {
 	}
 
 	rename(name) {
-		//return databaseFacade.update(id, newState);	
+		return getState(1)
+			.then((state) => { state.name = name; return state; })
+			.then((newState) => { return databaseFacade.update(1, newState); });	
 	}
 };

@@ -7,5 +7,13 @@ var expect = chai.expect;
 
 var eventHandlers = require("../../internal_modules/eventHandlers.js");
 
-chai.use(chaiAsPromised);
 chai.should();
+
+
+describe('cb', function() {
+	
+	it('Refactor EventHandlers into pure functions to allow unit testing.', function() {
+		return assert(true == false); // Todo item. Throw error.
+	});
+
+});

@@ -11,9 +11,9 @@ Built by Owen Smith
 - Handle DB Promise messages and resolution within Tamagotchi
 - Create Set function
 - Refactor Ternary operators in Tamagotchi
-- Fix feeding bug.
-- Fix pooping bug.
 - Name propagation.
+- Rewrite Tamagotchi state management to ensure that death terminates state update flow.
+- Add Put To Bed functionality
 
 ### Wishlist
 - Persistent state storage
@@ -63,6 +63,8 @@ We could read and write to an external JSON object, thereby persisting state, if
 
 ## Testing
 Chai + Mocha
+
+Where further tests remain to be written, a placeholder has been added to indicate test coverage. This will be listed as a failed test in the testing output.
 
 ## Caveats
 The data updates are not currently idempotent. 
