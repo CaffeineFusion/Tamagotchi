@@ -29,12 +29,17 @@ function get(id) {
 	return databaseFacade.get(id);
 }
 
+function birth(defaultState) {
+	console.log('birth', defaultState);
+	return databaseFacade.create(defaultState);
+}
+
 function die(id, cb) {
 	if(__state.heartbeat !== null) {
 		clearInterval(__state.heartbeat);
 		__state.heartbeat = null;
-		cb({'type':'death', 'message':'Your Tamagotchi has died,'})
-		return({success: true});
+		cb({'type':'death', 'message':'Your Tamagotchi has died'});
+		return({success: true, 'message':'Your Tamagotchi has died'});
 	}
 	return({success: false, message: 'Your Tamagotchi was already dead!'});
 }
@@ -88,12 +93,26 @@ const __updateModifiers = {
 	'age':0.5
 };
 
+const __defaultState = {'id':1,
+	'name':'Tammy',
+	'health':100,
+	'hunger':0,
+	'tiredness':0,
+	'bladder':0,
+	'age':0,
+	'awake':true
+};
 
+
+/**
+ * __rules - an object containing the business rules for Tamagotchi. These are a set of functions which test the object state for certain constraints.
+ * @type {Object}
+ */
 var __rules = {
-	death: 		(state) => { return (state.hunger >= 100 || state.age >= 100) },
-	exhaustion: (state) => { return (state.tiredness >= 80) },
-	poop: 		(state) => { return (state.bladder > 20) },
-	wake: 		(state) => { return (state.tiredness <= 0) } 
+	death: 		(state) => { return (state.hunger >= 100 || state.age >= 100); },
+	exhaustion: (state) => { return (state.tiredness >= 80); },
+	poop: 		(state) => { return (state.bladder > 20); },
+	wake: 		(state) => { return (state.tiredness <= 0); } 
 };
 
 
@@ -101,25 +120,29 @@ var __rules = {
 module.exports = class Tamagotchi {
 
 	constructor(eventCallback) {
-		__state.heartbeat = setInterval(() => { 
-			get(1)
-				.then((state) => { return increment( 1, state, __updateModifiers); })
-				.then((state) => { return (checkForDeath(state) ? die(1, eventCallback) : state); })
-				.then((state) => { return (isExhausted(state) ? sleep(1, eventCallback) : state); })
-				.then((state) => { return (__rules.poop(state) ? poop(1, eventCallback) : state); });
-		}, 1000 );
+		birth(__defaultState)
+			.then(() => {
+				__state.heartbeat = setInterval(() => { 
+					get(1)
+						.then((state) => { return increment( 1, state, __updateModifiers); })
+						.then((state) => { return (__rules.death(state) ? die(1, eventCallback) : state); })
+						.then((state) => { return (__rules.exhaustion(state) ? sleep(1, eventCallback) : state); })
+						.then((state) => { return (__rules.poop(state) ? poop(1, eventCallback) : state); });
+				}, 1000 );
+			})
+			.then(() => {console.log('constructed!', this, Object.keys(this), this.feed);});
 	}
 
 	feed() {
-		return increment(1, {'hunger':-25});
+		return increment(1, get(1), {'hunger':-25});
 	}
 
 	putToBed() {
-		return increment(1, {'isSleeping':true});
+		return increment(1, get(1), {'isSleeping':true});
 	}
 
 	murder() {
-		return die(1);
+		return die(1, () => {});
 	}
 
 	getStats() {
@@ -127,6 +150,6 @@ module.exports = class Tamagotchi {
 	}
 
 	rename(name) {
-		return databaseFacade.update(id, newState);	
+		//return databaseFacade.update(id, newState);	
 	}
-}
+};

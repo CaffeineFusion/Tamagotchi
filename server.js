@@ -30,18 +30,26 @@ Pressing Ctrl+C will exit the application, putting your Tamagotchi up for adopti
 Have fun!\n\
 ';
 
-function initTamagotchi() {
-	let tamagotchi = new Tamagotchi(eventHandlers.cb);
+function welcome(tamagotchi) {
 	// Display initial stats followed by basic instructions.
-	tamagotchi.getStats().then(console.log)
-		.then(() => { console.log(instructions); } )
-		.then(() => { return tamagotchi; });		
+	return tamagotchi.getStats().then(console.log)
+		.then(() => { console.log(instructions); } );
 }
 
+function initTamagotchi() {
+	return new Tamagotchi(eventHandlers.cb);
+}
+
+
 t = initTamagotchi();
+welcome(t);
+
+function terminate() {
+	t.murder();
+}
 
 var replServer = repl.start({ prompt: 'Tamagotchi > ' })
-	.rli.on('close', () => { t.murder(); }); //Make sure to terminate Tamagotchi heartbeat callback on close.
+	.rli.on('close', terminate); //"Adopting it out" - Make sure to terminate Tamagotchi heartbeat callback on close.
 
 
 
@@ -52,8 +60,8 @@ var replServer = repl.start({ prompt: 'Tamagotchi > ' })
 replServer.context.feed = () => {t.feed().then(console.log);};
 replServer.context.getStatus = () => {t.getStats().then(console.log);};
 replServer.context.putToBed = () => {t.putToBed().then(console.log);};
-replServer.context.murder = () => {t.murder().then(console.log);};     //not for the faint of heart
-replServer.context.adoptNew = () => {t = initTamagotchi();};
+replServer.context.murder = () => {t.murder(); console.log('How could you?!?');};     //not for the faint of heart
+replServer.context.adoptNew = () => {t = initTamagotchi(); welcome(t);};
 
 
 

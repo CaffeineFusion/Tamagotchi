@@ -6,22 +6,7 @@
 * 
 **/
 
-var database = {
-	//'tamigotchis': [
-	//	{
-			'id':1,
-			'name':'Tammy',
-			'health':100,
-			'hunger':0,
-			'tiredness':0,
-			'bladder':0,
-			'age':0.00,
-			'awake':true
-	//	}
-	//]
-};
-
-
+var database = {};
 
 module.exports = class MockDB {
 
@@ -39,9 +24,17 @@ module.exports = class MockDB {
 
 	update(id, d) {
 		return new Promise((resolve, reject) => {
-			//TODO: Dangerous. Implement write locking/queueing?
 			database = d;
 			return resolve(database);
 		});
+	}
+
+	/**
+	 * create(data) - in theory creates a new record in the db. Out-of-scope, we're just overwriting the single entry.
+	 * @param  {[type]} d [description]
+	 * @return {[type]}   [description]
+	 */
+	create(d) {
+		return this.update(1, JSON.parse(JSON.stringify(d)));	// NOTE: Somewhat of a hack - This is deep cloning the JSON object. Otherwise, updates would affect the original object.
 	}
 };
