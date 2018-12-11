@@ -8,7 +8,7 @@ module.exports.onPoop = () => {
 	    ( \\_\n\
 	  _(_\\ \\)__\n\
 	 (____\\___)) \n');
-} // adapted from http://ascii.co.uk/art/shit
+} // ascii adapted from http://ascii.co.uk/art/shit
 
 module.exports.onDeath = () => {
 	console.log('\n\
@@ -24,19 +24,21 @@ module.exports.onDeath = () => {
           | |  \\    |   |    ||\n\
           | |   \\. _|_. | .  ||\n\
           |                  ||\n\
-          |  name goes here  ||\n\
           |                  ||\n\
   *       | *   **    * **   |**      **\n');
-}
+
+	console.log('Your Tamagotchi has died :\'(');
+	console.log('To adopt a new Tamagotchi, use the command adoptNew()');
+} // ascii adapted from http://ascii.co.uk/art/tombstone
 
 // Callback that connects event handlers to custom triggers
 module.exports.cb = (event) => {
 	switch(event.type) {
 		case 'poop':
-			onPoop();
+			module.exports.onPoop(event);
 			break;
 		case 'death':
-			onDeath();
+			module.exports.onDeath(event);
 			break;
 	}
 };

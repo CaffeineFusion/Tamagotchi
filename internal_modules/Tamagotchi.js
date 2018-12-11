@@ -29,14 +29,14 @@ function get(id) {
 	return databaseFacade.get(id);
 }
 
-function die(id) {
+function die(id, cb) {
 	if(__state.heartbeat !== null) {
 		clearInterval(__state.heartbeat);
 		__state.heartbeat = null;
-		return({message: 'Your Tamagotchi has died!'});
+		cb({'type':'death', 'message':'Your Tamagotchi has died,'})
+		return({success: true});
 	}
-	else 
-		return({message: 'Your Tamagotchi was already dead!'});
+	return({success: false, message: 'Your Tamagotchi was already dead!'});
 }
 
 function poop(id, cb) { 
@@ -82,10 +82,10 @@ var __state = {
 * Rate of change for Tamagotchi on each heartbeat
 **/
 const __updateModifiers = {
-	'hunger':0.5,
-	'tiredness':0.5,
-	'bladder':0.5,
-	'age':0.01
+	'hunger':10,
+	'tiredness':1,
+	'bladder':1,
+	'age':0.5
 }
 
 
