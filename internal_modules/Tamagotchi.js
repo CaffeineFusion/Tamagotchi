@@ -86,7 +86,7 @@ const __updateModifiers = {
 	'tiredness':1,
 	'bladder':1,
 	'age':0.5
-}
+};
 
 
 var __rules = {
@@ -94,7 +94,7 @@ var __rules = {
 	exhaustion: (state) => { return (state.tiredness >= 80) },
 	poop: 		(state) => { return (state.bladder > 20) },
 	wake: 		(state) => { return (state.tiredness <= 0) } 
-}
+};
 
 
 // Note: Only one Tamagotchi of ID 1, yet coded to be extensible in the future.
@@ -106,7 +106,7 @@ module.exports = class Tamagotchi {
 				.then((state) => { return increment( 1, state, __updateModifiers); })
 				.then((state) => { return (checkForDeath(state) ? die(1, eventCallback) : state); })
 				.then((state) => { return (isExhausted(state) ? sleep(1, eventCallback) : state); })
-				.then((state) => { return (__rules.poop(state) ? poop(1, eventCallback) : state); })
+				.then((state) => { return (__rules.poop(state) ? poop(1, eventCallback) : state); });
 		}, 1000 );
 	}
 

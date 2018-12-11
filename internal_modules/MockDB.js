@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 /**
 * Mock DB - Basic JSON objects represents Data Object. 
@@ -28,7 +28,7 @@ module.exports = class MockDB {
 	constructor() {
 	}
 
-	get(id = 1) {
+	get(id) {
 		return new Promise((resolve, reject) => {
 			//console.log('id: ', id);
 			//console.log('database: ', database);
@@ -37,11 +37,11 @@ module.exports = class MockDB {
 		});
 	}
 
-	update(id = 1, d) {
+	update(id, d) {
 		return new Promise((resolve, reject) => {
 			//TODO: Dangerous. Implement write locking/queueing?
 			database = d;
 			return resolve(database);
 		});
 	}
-}
+};

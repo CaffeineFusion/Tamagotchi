@@ -1,6 +1,6 @@
 {
     "env": {
-        "browser": true,
+        "node": 1,
         "es6": true
     },
     "extends": "eslint:recommended",
@@ -11,7 +11,10 @@
     "rules": {
         "indent": [
             "error",
-            "tab"
+            "tab",
+            {
+                "SwitchCase": 1
+            }
         ],
         "quotes": [
             "error",
@@ -23,5 +26,6 @@
         ],
         "multi-string": "on",
         "no-console":"off"
+
     }
 }
