@@ -3,7 +3,14 @@ A simple Tamagotchi simulator.
 
 Built by Owen Smith
 
-## TODO
+## Requirements
+### Necessary
+- Capable of being fed
+- Capable of being put to bed
+- Capable of going to sleep on its own, losing health from hunger and pooping on its own without prompting
+- Capable of aging from birth through to death
+
+## Backlog
 - Set up handling for conflicting writes (eg. Update routine overwriting a new command)
 - Add error handling and prompts
 - Enforce return in server.js
@@ -15,6 +22,8 @@ Built by Owen Smith
 - Rewrite Tamagotchi state management to ensure that death terminates state update flow.
 - Add Put To Bed functionality.
 - Fix feeding whilst asleep and not hungry bug.
+- "losing health from hunger!"
+- Age states
 - Move config to config.json.
 
 

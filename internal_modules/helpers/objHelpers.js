@@ -23,7 +23,7 @@ module.exports.increment = (a, b) => {
 };
 
 /**
- * deepClone - safely clone an object so as to cleanse link to parent object.
+ * deepClone - safely clone an object removing prototypal inheritance.
  * 		Warning: function handling out of scope. Tested for strings and integers.
  * 		Refactor: A better implementation would adjust the prototypal chain, rather than serialising and deserialising the object.
  * 		
