@@ -48,6 +48,30 @@ module.exports.onFeed = (event) => {
 	}
 };
 
+
+module.exports.onWake = (event) => {
+	console.log(' \n\
+         \'\n\
+        \\  ,  /\n\
+    \' ,___/_\\___, \'\n\
+       \\ /o.o\\ /\n\
+   -=   > \\_/ <   =-\n\
+       /_\\___/_\\\n\
+    . `   \\ /   ` .\n\
+        /  `  \\\n\
+           .\n\
+		');
+}; // ascii adapted from https://www.asciiart.eu/nature/sun
+
+module.exports.onSleep = (event) => {
+	console.log(' \n\
+                             Z \n\
+                       Z \n\
+                    z \n\
+                  z \n\
+	');
+};
+
 // Callback that connects event handlers to custom triggers
 module.exports.cb = (event) => {
 	switch(event.type) {
@@ -59,6 +83,12 @@ module.exports.cb = (event) => {
 			break;
 		case 'feed':
 			module.exports.onFeed(event);
+			break;
+		case 'sleep':
+			module.exports.onSleep(event);
+			break;
+		case 'wake':
+			module.exports.onWake(event);
 			break;
 	}
 };
