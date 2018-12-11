@@ -61,6 +61,7 @@ module.exports.onWake = (event) => {
         /  `  \\\n\
            .\n\
 		');
+	console.log(event.message);
 }; // ascii adapted from https://www.asciiart.eu/nature/sun
 
 module.exports.onSleep = (event) => {
@@ -70,6 +71,7 @@ module.exports.onSleep = (event) => {
                     z \n\
                   z \n\
 	');
+	console.log(event.message);
 };
 
 // Callback that connects event handlers to custom triggers

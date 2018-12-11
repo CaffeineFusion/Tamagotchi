@@ -24,6 +24,7 @@ module.exports.incrementJSON = (a, b) => {
 
 /**
  * deepCloneJSON - safely clone an object so as to cleanse link to parent object.
+ * 		Warning: function handling out of scope. Tested for strings and integers.
  * 		
  * @param  {obj} obj A JavaScript Object
  * @return {obj}     A duplicate, but unlinked, object.

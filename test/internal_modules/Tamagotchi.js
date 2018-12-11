@@ -32,8 +32,8 @@ const defaultTamagotchi = {'id':1,
 
 describe('Tamagotchi.update()', function() {
 
-    it('Should update the Tamagotchi state by a given amount', function() {
-        var expectedOutput = {'id':1,
+	it('Should update the Tamagotchi state by a given amount', function() {
+		var expectedOutput = {'id':1,
 			'name':'Tammy',
 			'health':100,
 			'hunger':0.5,
@@ -42,6 +42,6 @@ describe('Tamagotchi.update()', function() {
 			'age':0.01,
 			'awake':true };
 
-        return expect(Tamagotchi.update().should.eventually.deep.equal(expectedOutput));
-    });
+		return expect(Tamagotchi.update().should.eventually.deep.equal(expectedOutput));
+	});
 });

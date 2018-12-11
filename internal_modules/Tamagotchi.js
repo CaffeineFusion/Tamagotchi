@@ -64,7 +64,7 @@ function sleep(id, cb) {
 		})
 		.then((updatedState) => { return databaseFacade.update(id, updatedState); })
 		.then((newState) => { 
-			cb({'type':'sleep'}); 
+			cb({'type':'sleep', 'message':'Your Tamagotchi has fallen asleep'}); 
 			return newState; 
 		});
 }
@@ -77,7 +77,7 @@ function wake(id, cb) {
 		})
 		.then((updatedState) => { return databaseFacade.update(id, updatedState); })
 		.then((newState) => { 
-			cb({'type':'wake'}); 
+			cb({'type':'wake', 'message':'Your Tamagotchi has woken up'}); 
 			return newState; 
 		});
 }
@@ -151,7 +151,7 @@ module.exports = class Tamagotchi {
 							return increment( 1, state, modifiers); 
 						})
 						.then((state) => { return (__rules.death(state) ? die(1, eventCallback) : state); })
-						.then((state) => { return (__rules.wake(state) ? this.awaken(eventCallback) : state); })
+						.then((state) => { return (__rules.wake(state) ? wake(1, eventCallback) : state); })
 						.then((state) => { return (__rules.exhaustion(state) ? sleep(1, eventCallback) : state); })
 						.then((state) => { return (__rules.poop(state) ? poop(1, eventCallback) : state); });
 				}, 1000 );

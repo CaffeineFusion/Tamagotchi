@@ -15,6 +15,7 @@ Built by Owen Smith
 - Seperate eventHandlers from IO.
 - Refactor Ternary operators in Tamagotchi
 - Fix feeding bug.
+- Name propagation.
 
 ### Wishlist
 - Persistent state storage
