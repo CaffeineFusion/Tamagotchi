@@ -25,12 +25,11 @@ function increment(id, state, modifiers) {
 	return databaseFacade.update(id, jsonHelpers.incrementJSON(state, modifiers));
 }
 
-function get(id) {
+function getState(id) {
 	return databaseFacade.get(id);
 }
 
 function birth(defaultState) {
-	console.log('birth', defaultState);
 	return databaseFacade.create(defaultState);
 }
 
@@ -45,29 +44,42 @@ function die(id, cb) {
 }
 
 function poop(id, cb) { 
-	return get(id)
+	return getState(id)
 		.then((state) => { 
 			state.bladder = 0;
 			return state;
 		})
-		.then((updatedState) => { databaseFacade.update(id, updatedState); })
-		.then((newState) => { cb({'type':'poop'}); return newState; });
+		.then((updatedState) => { return databaseFacade.update(id, updatedState); })
+		.then((newState) => { 
+			cb({'type':'poop'}); 
+			return newState; 
+		});
 }
 
-function sleep(id) {
-
+function sleep(id, cb) {
+	return getState(id)
+		.then((state) => { 
+			state.awake = false;
+			return state;
+		})
+		.then((updatedState) => { return databaseFacade.update(id, updatedState); })
+		.then((newState) => { 
+			cb({'type':'sleep'}); 
+			return newState; 
+		});
 }
 
-function checkForDeath(state) {
-	return (state.hunger >= 100 || state.age >= 100);
-}
-
-function isExhausted(state) {
-	return (state.tiredness >= 80);
-}
-
-function isAwake(state) {
-	return state.isAwake;
+function wake(id, cb) {
+	return getState(id)
+		.then((state) => { 
+			state.awake = true;
+			return state;
+		})
+		.then((updatedState) => { return databaseFacade.update(id, updatedState); })
+		.then((newState) => { 
+			cb({'type':'wake'}); 
+			return newState; 
+		});
 }
 
 
@@ -79,18 +91,19 @@ var __state = {
 	'heartbeat':null
 };
 
-
-
-
 /**
 * Business Rules
 * Rate of change for Tamagotchi on each heartbeat
 **/
 const __updateModifiers = {
-	'hunger':10,
-	'tiredness':1,
+	'hunger':1,
+	'tiredness':10,
 	'bladder':1,
 	'age':0.5
+};
+
+const __sleepModifier = {
+	'tiredness':-5
 };
 
 const __defaultState = {'id':1,
@@ -110,9 +123,10 @@ const __defaultState = {'id':1,
  */
 var __rules = {
 	death: 		(state) => { return (state.hunger >= 100 || state.age >= 100); },
-	exhaustion: (state) => { return (state.tiredness >= 80); },
-	poop: 		(state) => { return (state.bladder > 20); },
-	wake: 		(state) => { return (state.tiredness <= 0); } 
+	exhaustion: (state) => { return (state.tiredness >= 80 && state.awake == true); },
+	poop: 		(state) => { console.log(state); return (state.awake == true && state.bladder > 20); },
+	wake: 		(state) => { return (state.awake == false && (state.tiredness <= 0 || state.bladder > 80)); },
+	notHungry:	(state) => { return (state.hunger <= 25 ); }
 };
 
 
@@ -123,22 +137,48 @@ module.exports = class Tamagotchi {
 		birth(__defaultState)
 			.then(() => {
 				__state.heartbeat = setInterval(() => { 
-					get(1)
-						.then((state) => { return increment( 1, state, __updateModifiers); })
+					/**
+					 * On tick: 1) Get current state. 2) Update state based on modifiers (take into accound sleep).
+					 * 			Check for 3) Death, 4) Exhaustion, 5) Poop
+					 */
+					console.log('heartbeat');
+					getState(1)
+						.then((state) => { 
+							//console.log(state);	
+							let modifiers = jsonHelpers.deepCloneJSON(__updateModifiers);
+							if(state.awake == false) modifiers.tiredness = __sleepModifier.tiredness;
+							//if(__rules.wake(state)) this.awaken();
+							return increment( 1, state, modifiers); 
+						})
 						.then((state) => { return (__rules.death(state) ? die(1, eventCallback) : state); })
+						.then((state) => { return (__rules.wake(state) ? this.awaken(eventCallback) : state); })
 						.then((state) => { return (__rules.exhaustion(state) ? sleep(1, eventCallback) : state); })
 						.then((state) => { return (__rules.poop(state) ? poop(1, eventCallback) : state); });
 				}, 1000 );
-			})
-			.then(() => {console.log('constructed!', this, Object.keys(this), this.feed);});
+			});
+		//.then(() => {console.log('constructed!', this, Object.keys(this), this.feed); });
 	}
 
-	feed() {
-		return increment(1, get(1), {'hunger':-25});
+	feed(cb) {
+		return getState(1)
+			.then((state) => { return state.awake == false ? this.awaken() : state; })
+			.then((state) => { 
+				//If our Tamagotchi is not hungry, callback with a failure message.
+				//Else, feed the Tamagotchi.
+				if(__rules.notHungry(state))
+					return cb({'type':'feed', 'success':false, 'message':'Your Tamagotchi is not hungry right now [hunger <= 25]'});
+
+				return increment(1, state,  {'hunger':-25})
+					.then(cb({'type':'feed', 'success':true, 'message':'Omnomnomnom'}));
+			});
 	}
 
 	putToBed() {
-		return increment(1, get(1), {'isSleeping':true});
+		//return increment(1, getState(1), {'isSleeping':true});
+	}
+
+	awaken(cb) {
+		return wake(1, cb);
 	}
 
 	murder() {
@@ -146,7 +186,7 @@ module.exports = class Tamagotchi {
 	}
 
 	getStats() {
-		return get(1);
+		return getState(1);
 	}
 
 	rename(name) {

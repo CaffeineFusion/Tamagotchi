@@ -31,6 +31,23 @@ module.exports.onDeath = () => {
 	console.log('To adopt a new Tamagotchi, use the command adoptNew()');
 }; // ascii adapted from http://ascii.co.uk/art/tombstone
 
+module.exports.onFeed = (event) => {
+	if(event.success != true) {
+		console.log(event.message);
+	}
+	else {
+		console.log(' \n\
+                     (\n\
+                      )\n\
+                 __..---..__\n\
+             ,-=\'  /  |  \\  `=-.\n\
+            :--..___________..--;\n\
+             \\.,_____________,./\n');
+		console.log('Omnomnomnom!');
+
+	}
+};
+
 // Callback that connects event handlers to custom triggers
 module.exports.cb = (event) => {
 	switch(event.type) {
@@ -39,6 +56,9 @@ module.exports.cb = (event) => {
 			break;
 		case 'death':
 			module.exports.onDeath(event);
+			break;
+		case 'feed':
+			module.exports.onFeed(event);
 			break;
 	}
 };

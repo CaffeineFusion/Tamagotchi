@@ -12,12 +12,23 @@
  * @return {object}
  */
 module.exports.incrementJSON = (a, b) => {
-	var result = a;
+	var result = deepCloneJSON(a);	
 	Object.keys(b).forEach((key) => {
 		//If the key exists in {a}, increment by corresponding value in {b}
 		if(typeof a[key] !== undefined && a[key] !== null) {
 			result[key] = a[key] + b[key];
 		}
 	});
-	return result;
+	return result;	
 };
+
+/**
+ * deepCloneJSON - safely clone an object so as to cleanse link to parent object.
+ * 		
+ * @param  {obj} obj A JavaScript Object
+ * @return {obj}     A duplicate, but unlinked, object.
+ */
+var deepCloneJSON = (obj) => {
+	return JSON.parse(JSON.stringify(obj));		// NOTE: Somewhat of a hack - This creates a new copy of an object, breaking the connection to its parent.
+};
+module.exports.deepCloneJSON = deepCloneJSON;

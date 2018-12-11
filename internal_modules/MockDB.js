@@ -6,6 +6,8 @@
 * 
 **/
 
+var jsonHelpers = require('./helpers/jsonHelpers.js');
+
 var database = {};
 
 module.exports = class MockDB {
@@ -35,6 +37,6 @@ module.exports = class MockDB {
 	 * @return {[type]}   [description]
 	 */
 	create(d) {
-		return this.update(1, JSON.parse(JSON.stringify(d)));	// NOTE: Somewhat of a hack - This is deep cloning the JSON object. Otherwise, updates would affect the original object.
+		return this.update(1, jsonHelpers.deepCloneJSON(d));	//DeepClone Required to decouple the database instance from the template object. Otherwise, updating the database would update the template object as well!
 	}
 };

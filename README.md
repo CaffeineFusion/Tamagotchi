@@ -13,6 +13,8 @@ Built by Owen Smith
 - Add Sleep/Awake state
 - Create Set function
 - Seperate eventHandlers from IO.
+- Refactor Ternary operators in Tamagotchi
+- Fix feeding bug.
 
 ### Wishlist
 - Persistent state storage
@@ -34,7 +36,10 @@ There is currently no persistent storage. Your furry pet's existence will, sadly
 
 ### Testing the Code
 
-`npm test`
+```
+npm install
+npm test
+```
 
 ## Design
 
@@ -63,4 +68,4 @@ The data updates are not currently idempotent.
 ## Naming Conventions
 .js files returning a class are capitalised.
 .js files returning a function/collection of functions are standard camel case.
-Folders utilize underscores.
+Folders a lowercase with underscores.
