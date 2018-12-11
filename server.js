@@ -2,29 +2,8 @@
 
 // Load custom libraries
 var Tamagotchi = require('./internal_modules/Tamagotchi.js');
-
-//Event Handlers
-var onPoop() {
-	console.log('\n\
-     (   )\n\
-  (   ) (\n\
-   ) _   )\n\
-    ( \\_\n\
-  _(_\\ \\)__\n\
- (____\\___)) \n\
-		)\n');
-} // adapted from http://ascii.co.uk/art/shit
-
-// Callback that connects event handlers to custom triggers
-var cb = (event) => {
-	switch(event.type) {
-		case poop:
-			onPoop();
-			break;
-	}
-};
-
-var t = new Tamagotchi(cb);
+var eventHandlers = require('./internal_modules/eventHandlers.js');
+var t = new Tamagotchi(eventHandlers.cb);
 
 // Loading message
 // ascii art generated via: http://patorjk.com/software/taag/#p=display&f=Ogre&t=Tamagotchi

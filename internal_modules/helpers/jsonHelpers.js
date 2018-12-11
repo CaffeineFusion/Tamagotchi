@@ -15,8 +15,9 @@ module.exports.incrementJSON = (a, b) => {
 	var result = a;
 	Object.keys(b).forEach((key) => {
 		//If the key exists in {a}, increment by corresponding value in {b}
-		if(a[key] && a[key] !== null) 
+		if(typeof a[key] !== undefined && a[key] !== null) {
 			result[key] = a[key] + b[key];
+		}
 	});
 	return result;
 };

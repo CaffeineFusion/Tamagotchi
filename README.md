@@ -12,6 +12,7 @@ Built by Owen Smith
 - Handle DB Promise messages and resolution within Tamagotchi
 - Add Sleep/Awake state
 - Create Set function
+- Seperate eventHandlers from IO.
 
 ### Wishlist
 - Persistent state storage

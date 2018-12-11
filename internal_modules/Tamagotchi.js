@@ -2,7 +2,7 @@
 
 // var fs = require('fs');
 var databaseFacade = new (require('./MockDB.js'))();
-var jsonHelpers = require('./jsonHelpers.js');
+var jsonHelpers = require('./helpers/jsonHelpers.js');
 
 /**
 * Primary class. Instantiating creates a Tamagotchi object
@@ -92,8 +92,8 @@ const __updateModifiers = {
 var __rules = {
 	death: 		(state) => { return (state.hunger >= 100 || state.age >= 100) },
 	exhaustion: (state) => { return (state.tiredness >= 80) },
-	poop: 		(state) => { return (state.bladder > 70) },
-	wake: 		(state) => {  } 
+	poop: 		(state) => { return (state.bladder > 20) },
+	wake: 		(state) => { return (state.tiredness <= 0) } 
 }
 
 
@@ -103,7 +103,7 @@ module.exports = class Tamagotchi {
 	constructor(eventCallback) {
 		__state.heartbeat = setInterval(() => { 
 			get(1)
-				.then((state) => { increment( 1, state, __updateModifiers); })
+				.then((state) => { return increment( 1, state, __updateModifiers); })
 				.then((state) => { return (checkForDeath(state) ? die(1, eventCallback) : state); })
 				.then((state) => { return (isExhausted(state) ? sleep(1, eventCallback) : state); })
 				.then((state) => { return (__rules.poop(state) ? poop(1, eventCallback) : state); })
