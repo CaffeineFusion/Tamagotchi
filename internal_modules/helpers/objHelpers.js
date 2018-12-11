@@ -22,6 +22,26 @@ module.exports.increment = (a, b) => {
 	return result;	
 };
 
+
+/**
+ * update - takes an object {a} and sets the values of corresponding elements in object {b}.
+ * 
+ * 		This function is only for numeric values.	
+ * 		Warning: Will enumerate over all keys on object. This would include functions.
+ * 		
+ * @param  {object} - key value pairs
+ * @param  {object} - key value pairs
+ * @return {object}
+ */
+module.exports.update = (a, b) => {
+	var result = deepClone(a);	
+	Object.keys(b).forEach((key) => {
+		result[key] = b[key];
+	});
+	return result;	
+};
+
+
 /**
  * deepClone - safely clone an object removing prototypal inheritance.
  * 		Warning: function handling out of scope. Tested for strings and integers.

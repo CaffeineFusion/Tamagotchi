@@ -14,6 +14,14 @@ describe('increment', function() {
 
 });
 
+
+describe('update', function() {
+
+
+
+});
+
+
 describe('deepClone', function() {
 
 	it('Should deep clone an existing object - functions out-of-scope', function() {
