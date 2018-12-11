@@ -30,8 +30,11 @@ Pressing Ctrl+C will exit the application, putting your Tamagotchi up for adopti
 Have fun!\n\
 ';
 
+/**
+ * welcome(tamagotchi) - display initial
+ * @param  {object} tamagotchi [description]
+ */
 function welcome(tamagotchi) {
-	// Display initial stats followed by basic instructions.
 	return tamagotchi.getStats().then(console.log)
 		.then(() => { console.log(instructions); } );
 }

@@ -6,21 +6,22 @@ Built by Owen Smith
 ## TODO
 - Set up handling for conflicting writes (eg. Update routine overwriting a new command)
 - Add error handling and prompts
-- Add decimal-safe numbers
+- Enforce return in server.js
 - Name the Tamagotchi
-- Add eventhandler to bubble up internal output events.
 - Handle DB Promise messages and resolution within Tamagotchi
-- Add Sleep/Awake state
 - Create Set function
-- Seperate eventHandlers from IO.
 - Refactor Ternary operators in Tamagotchi
 - Fix feeding bug.
+- Fix pooping bug.
 - Name propagation.
 
 ### Wishlist
 - Persistent state storage
 - Idempotency
 - Rework base data structure for future extensibility
+
+### Out-of-scope
+- Add decimal-safe numbers
 
 
 ## Introduction
@@ -51,7 +52,7 @@ To handle the user interaction, the built in REPL server seemed like a rapid way
 The server is somewhat overpowered for our purposes (eg. allowing any old Javascript to be written) but reduced the amount of custom code required for event and input handlers.
 
 ### Tamagotchi
-Tamagotchi is a class that encapsulates our Tamagotchis functionality, business logic, and communicates to our DB layer.
+Tamagotchi is a class that encapsulates our Tamagotchi's functionality, business logic, and communication to DB layer.
 
 ### MockDB
 An actual DB seemed like overkill for this demo. Instead, I've pulled the Tamagotchi state into a single JSON object (the "DB") and created a facade that interacts with it. This would significantly reduce the effort for porting this application to an actual database and persistent storage.
