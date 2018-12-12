@@ -1,8 +1,8 @@
 'use strict';
 
 /**
-* Mock DB - Basic JSON objects represents Data Object. 
-* DB would be expanded out to an external data source.
+* Mock DB - Basic javascript object moonlighting as database. 
+* Future: DB would be expanded out to an external, persistent data source.
 * 
 **/
 
@@ -16,9 +16,9 @@ module.exports = class MockDB {
 	}
 
 	/**
-	 * get - get Database entry {id} - hardcoded. id === 1. Returns full "database" object.
+	 * get - get Database entry {id} - hardcoded. Returns full "database" object.
 	 * @param  {int} id identifier for record
-	 * @return {obj} record as javascript object
+	 * @return {Promise} returns a Promise resolving to the state of the record.
 	 */
 	get(id) {
 		return new Promise((resolve, reject) => {
@@ -29,6 +29,12 @@ module.exports = class MockDB {
 		});
 	}
 
+	/**
+	 * update - updates record {id} (hard coded to update full database object) with object {d}
+	 * @param  {int} id    record identifer
+	 * @param  {obj} d     data to be updated
+	 * @return {Promise}   a Promise resolving to the new state of the record
+	 */
 	update(id, d) {
 		return new Promise((resolve, reject) => {
 			database = objHelpers.deepClone(d);					// DeepClone Required to decouple the database instance from the template object. Otherwise, updating the database would update the template object as well!
@@ -38,8 +44,8 @@ module.exports = class MockDB {
 
 	/**
 	 * create(data) - in theory creates a new record in the db. Out-of-scope, we're just overwriting the single entry.
-	 * @param  {[type]} d [description]
-	 * @return {[type]}   [description]
+	 * @param  {obj} d    data to be stored
+	 * @return {Promise}  a Promise resolving to the new state of the record
 	 */
 	create(d) {
 		return this.update(1, d);	
