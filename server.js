@@ -62,7 +62,7 @@ var replServer = repl.start({ prompt: 'Tamagotchi > ' })
 **/
 replServer.context.feed = () => {t.feed(eventHandlers.cb);};
 replServer.context.getStatus = () => {t.getStats().then(console.log);};
-replServer.context.putToBed = () => {t.putToBed().then(console.log);};
-replServer.context.murder = () => {t.murder(); console.log('How could you?!?');};     //not for the faint of heart
+replServer.context.putToBed = () => {t.putToBed(eventHandlers.cb);};
+replServer.context.murder = () => {t.murder(eventHandlers.cb);};     //not for the faint of heart
 replServer.context.adoptNew = () => {t = initTamagotchi(); welcome(t);};
 

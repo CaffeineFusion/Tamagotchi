@@ -15,7 +15,6 @@ var objHelpers = require('./helpers/objHelpers.js');
 * === Privately scoped Functions ===
 **/ 
 
-
 function birth(defaultState) {
 	return dbFacade.create(defaultState);
 }
@@ -26,9 +25,9 @@ function die(id, cb) {
 		clearInterval(__state.heartbeat);
 		__state.heartbeat = null;
 		cb({'type':'death', 'message':'Your Tamagotchi has died'});
-		return({success: true, 'message':'Your Tamagotchi has died'});
+		return ({success: true, 'message':'Your Tamagotchi has died'});
 	}
-	return({success: false, message: 'Your Tamagotchi was already dead!'});
+	return ({success: false, message: 'Your Tamagotchi was already dead!'});
 }
 
 function poop(id, cb) { 
@@ -67,22 +66,22 @@ var __state = {
 * Business Rules
 * Rate of change for Tamagotchi on each heartbeat
 **/
-const __updateModifiers = {
+const updateModifiers = {
 	'hunger':20,
 	'tiredness':10,
 	'bladder':2,
 	'age':0.5
 };
 
-const __sleepModifier = {
+const sleepModifier = {
 	'tiredness':-5
 };
 
-const __dyingModifier = {
+const dyingModifier = {
 	'health':-5
 };
 
-const __defaultState = {'id':1,
+const defaultState = {'id':1,
 	'name':'Tammy',
 	'health':100,
 	'hunger':0,
@@ -111,7 +110,7 @@ var __rules = {
 module.exports = class Tamagotchi {
 
 	constructor(eventCallback) {
-		birth(__defaultState)
+		birth(defaultState)
 			.then(() => {
 				__state.heartbeat = setInterval(() => { 
 					/**
@@ -122,19 +121,26 @@ module.exports = class Tamagotchi {
 					dbFacade.getState(1)
 						.then((state) => { 
 							//console.log(state);	
-							let modifiers = objHelpers.deepClone(__updateModifiers);
-							if(state.awake == false) modifiers.tiredness = __sleepModifier.tiredness;
+							let modifiers = objHelpers.deepClone(updateModifiers);
+							if(state.awake == false) modifiers.tiredness = sleepModifier.tiredness;
 							if(__rules.dying(state)) {
-								modifiers.health = __dyingModifier.health;
+								modifiers.health = dyingModifier.health;
 								eventCallback({'type':'dying'});
 							}
 							//if(__rules.wake(state)) this.awaken();
 							return dbFacade.increment( 1, state, modifiers); 
 						})
-						.then((state) => { return (__rules.death(state) ? die(1, eventCallback) : state); })
+						.then((state) => { 		
+							if(__rules.death(state)) {
+								die(1, eventCallback); 
+								throw({'type':'updateLoopTermination'}); // Break from update loop.
+							}
+							return state;
+						})
 						.then((state) => { return (__rules.wake(state) ? wake(1, eventCallback) : state); })
 						.then((state) => { return (__rules.exhaustion(state) ? sleep(1, eventCallback) : state); })
-						.then((state) => { return (__rules.poop(state) ? poop(1, eventCallback) : state); });
+						.then((state) => { return (__rules.poop(state) ? poop(1, eventCallback) : state); })
+						.catch(eventCallback);
 				}, 1000 );
 			});
 		//.then(() => {console.log('constructed!', this, Object.keys(this), this.feed); });
@@ -160,25 +166,29 @@ module.exports = class Tamagotchi {
 	}
 
 	putToBed(cb) {
-		return dbFacade.update(1, {'awake' : false})
+		return dbFacade.getState(1)
 			.then((state) => {
 				if(__rules.death(state)) 
 					throw({'type':'putToBed', 'success':false, 'message':'Your Tamagotchi has died! We can not put it to bed!'}); 
 			})
+			.then(() => { sleep(1, cb); })
 			.catch(cb);
 	}
 
 	awaken(cb) {
-		return wake(1, cb)
+		return dbFacade.getState(1)
 			.then((state) => {
 				if(__rules.death(state)) 
 					throw({'type':'wake', 'success':false, 'message':'Your Tamagotchi has died! We can not wake it up!'}); 
 			})
-			.catch(cb);;
+			.then(() => { wake(1, cb); })
+			.catch(cb);
 	}
 
 	murder(cb) {
-		return die(1, (res) => { cb({'type':'murder'}); });
+		return dbFacade.update(1, {'health' : 0})
+			.then(() => {die(1, (res) => { cb({'type':'murder'}); }); })
+			.catch(cb);
 	}
 
 	getStats() {
@@ -187,8 +197,5 @@ module.exports = class Tamagotchi {
 
 	rename(name) {
 		return dbFacade.update(1, {'name' : name});
-		/*return getState(1)
-			.then((state) => { state.name = name; return state; })
-			.then((newState) => { return db.update(1, newState); });	*/
 	}
 };

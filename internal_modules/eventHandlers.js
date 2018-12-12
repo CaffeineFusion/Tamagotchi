@@ -52,6 +52,9 @@ module.exports.onFeed = (event) => {
 	}
 }; // ascii adapted from https://www.asciiart.eu/food-and-drinks/other - credit to Riitta Rasimus
 
+module.exports.onMurder = (event) => {
+	console.log('Ohno! How could you?');
+}; 
 
 module.exports.onWake = (event) => {
 	if(event.success == false) {
@@ -91,9 +94,6 @@ module.exports.onSleep = (event) => {
 // Callback that connects event handlers to custom triggers
 module.exports.cb = (event) => {
 	switch(event.type) {
-		case 'poop':
-			module.exports.onPoop(event);
-			break;
 		case 'death':
 			module.exports.onDeath(event);
 			break;
@@ -102,6 +102,15 @@ module.exports.cb = (event) => {
 			break;
 		case 'feed':
 			module.exports.onFeed(event);
+			break;
+		case 'murder':
+			module.exports.onMurder(event);
+			break;
+		case 'poop':
+			module.exports.onPoop(event);
+			break;
+		case 'putToBed':
+			module.exports.onSleep(event);
 			break;
 		case 'sleep':
 			module.exports.onSleep(event);
