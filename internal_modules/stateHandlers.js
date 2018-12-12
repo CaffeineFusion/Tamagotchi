@@ -13,9 +13,7 @@
 * 
 **/ 
 
-
 var objHelpers = require('./helpers/objHelpers.js');
-
 
 module.exports.birth = (db, defaultState) => {
 	return db.create(defaultState);
@@ -57,6 +55,18 @@ var wake = module.exports.wake = (db, id, cb) => {
 		});
 };
 
+
+/**
+ * tick - handles one step of state transformation given a set of rules and modifiers to follow.
+ * @param  {obj} 	  db            database instance [TODO: change to function]
+ * @param  {obj} 	  heartbeat     update timer [TODO: refactor]
+ * @param  {obj} 	  rules         set of conditional functions testing if a certain state is met
+ * @param  {obj} 	  modifiers     set of values to be updated given certain state types
+ * @param  {function} eventCallback callback to handle messages/errors
+ * @return {Promise}              	a Promise resolving to the new state of the Tamagotchi
+ *
+ * Refactor: Remove knowledge of db and heartbeat. Replace with callback functions. 
+ */
 module.exports.tick = (db, heartbeat, rules, modifiers, eventCallback) => {
 	/**
 	 * On tick: 1) Get current state. 2) Update state based on modifiers (take into accound sleep).
