@@ -102,10 +102,122 @@ describe('Tamagotchi.rules', function() {
 			return assert(!tamagotchi.rules.dying(state));
 		});
 	});
+
+
+	describe('exhaustion', function() {
+		it('tiredness: An awake Tamagotchi is exhausted when tiredness reaches 80', function() {
+			let state = { 'tiredness':80, 'awake':true};
+			return assert(tamagotchi.rules.exhaustion(state));
+		});
+
+		it('tiredness: An awake Tamagotchi is exhausted when tiredness exceeds 80 [80.5]', function() {
+			let state = { 'tiredness':80.5, 'awake':true};
+			return assert(tamagotchi.rules.exhaustion(state));
+		});
+
+		it('tiredness: An awake Tamagotchi is not exhausted below 80 [79.5]', function() {
+			let state = { 'tiredness':79.5, 'awake':true};
+			return assert(!tamagotchi.rules.exhaustion(state));
+		});
+
+		it('tiredness: An awake Tamagotchi is not exhausted below 80 [0]', function() {
+			let state = { 'tiredness':0, 'awake':true};
+			return assert(!tamagotchi.rules.exhaustion(state));
+		});
+
+		it('tiredness: An awake Tamagotchi is not exhausted below 80 [-0.5]', function() {
+			let state = { 'tiredness':-0.5, 'awake':true};
+			return assert(!tamagotchi.rules.exhaustion(state));
+		});
+
+		it('awake: An asleep Tamagotchi is not considered exhaused [80]', function() {
+			let state = { 'tiredness':80, 'awake':false};
+			return assert(!tamagotchi.rules.exhaustion(state));
+		});
+	});
+
+	describe('poop', function() {
+		it('bladder: An awake Tamagotchi will poop when bladder exceeds 20 [20.5]', function() {
+			let state = { 'bladder':20.5, 'awake':true};
+			return assert(tamagotchi.rules.poop(state));
+		});
+
+		it('bladder: An awake Tamagotchi will not poop while bladder is at or below 20 [20]', function() {
+			let state = { 'bladder':20, 'awake':true};
+			return assert(!tamagotchi.rules.poop(state));
+		});
+
+		it('bladder: An awake Tamagotchi will not poop while bladder is at or below 20 [-0.5]', function() {
+			let state = { 'bladder':0, 'awake':true};
+			return assert(!tamagotchi.rules.poop(state));
+		});
+
+		it('bladder: An asleep Tamagotchi will not poop, regardless of bladder [100]', function() {
+			let state = { 'bladder':100, 'awake':false};
+			return assert(!tamagotchi.rules.poop(state));
+		});
+	});
+
+	//wake: 		(state) => { return (state.awake == false && (state.tiredness <= 0 || state.bladder > 80)); },
+	
+	describe('wake', function() {
+		it('tiredness: A sleeping Tamagotchi will rouse if tiredness reaches 0', function() {
+			let state = { 'tiredness':0, 'awake':false, 'bladder':0};
+			return assert(tamagotchi.rules.wake(state));
+		});
+
+		it('tiredness: A sleeping Tamagotchi will rouse if tiredness reaches 0 [-0.5]', function() {
+			let state = { 'tiredness':-0.5, 'awake':false, 'bladder':0};
+			return assert(tamagotchi.rules.wake(state));
+		});
+
+		it('tiredness: A sleeping Tamagotchi will not rouse while tiredness is above 0 [0.5]', function() {
+			let state = { 'tiredness':0.5, 'awake':false, 'bladder':0};
+			return assert(!tamagotchi.rules.wake(state));
+		});
+
+		it('bladder: A sleeping Tamagotchi will rouse when bladder exceeds 80 [80.5]', function() {
+			let state = { 'tiredness':50, 'awake':false, 'bladder':80.5};
+			return assert(tamagotchi.rules.wake(state));
+		});
+
+		it('bladder: A sleeping Tamagotchi will not rouse when bladder has not exceeeded 80 [80]', function() {
+			let state = { 'tiredness':50, 'awake':false, 'bladder':80};
+			return assert(!tamagotchi.rules.wake(state));
+		});
+
+		it('awake: An awake Tamagotchi does not need to be roused', function() {
+			let state = { 'tiredness':0, 'awake':true, 'bladder':80.5};
+			return assert(!tamagotchi.rules.wake(state));
+		});
+	});
+
+	//notHungry:	(state) => { return (state.hunger <= 25 ); }
+	describe('notHungry', function() {
+		it('hunger: A Tamagotchi will not be hungry when hunger <= 25 [25]', function() {
+			let state = { 'hunger':25 };
+			return assert(tamagotchi.rules.notHungry(state));
+		});
+
+		it('hunger: A Tamagotchi will not be hungry when hunger <= 25 [0]', function() {
+			let state = { 'hunger':0 };
+			return assert(tamagotchi.rules.notHungry(state));
+		});
+
+		it('hunger: A Tamagotchi will be hungry when hunger exceeds 25 [25.5]', function() {
+			let state = { 'hunger':25.5 };
+			return assert(!tamagotchi.rules.notHungry(state));
+		});
+
+		it('hunger: Hunger is not affected by sleep [25.5]', function() {
+			let state = { 'hunger':25.5, 'awake':false };
+			return assert(!tamagotchi.rules.notHungry(state));
+		});
+	});
 });
 
 
-describe('Tamagotchi.update()', function() {
+/*describe('Tamagotchi.update()', function() {
 
 	it('Should update the Tamagotchi state by a given amount', function() {
 		var expectedOutput = {'id':1,
@@ -119,4 +231,4 @@ describe('Tamagotchi.update()', function() {
 
 		return expect(Tamagotchi.update().should.eventually.deep.equal(expectedOutput));
 	});
-});
+});*/

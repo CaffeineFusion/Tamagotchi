@@ -76,8 +76,8 @@ The Tamagotchi:
 1) dies when it reaches 0 health or age 100.
 2) starts losing health when its hunger hits or exceeds 100.
 3) keeps trying to sleep when its exhaustion reaches 80. (currently no penalty for being over tired)
-4) will poop while awake and bladder exceeds 20.
-5) will wake up if tiredness reaches 0, or bladder exceeds 80.
+4) will poop while awake and bladder exceeds 20. 
+5) will wake up if tiredness reaches 0, or bladder exceeds 80. (currently no penalty for bladder exceeding 100)
 6) will refuse to eat if its hunger is not above 25. (a lazy counter to over-feeding)
 
 
