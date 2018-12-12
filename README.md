@@ -40,20 +40,45 @@ The default status update cycle is arbitrarily high for demo purposes.
 
 Rates of change can be found in internal_modules/Tamagotchi.js
 ```
-const __updateModifiers = {
-	'hunger':2,
-	'tiredness':10,
-	'bladder':2,
-	'age':0.5
-};
-
-const __sleepModifier = {
-	'tiredness':-5
+const modifiers = {
+	update: {
+		'hunger':2,
+		'tiredness':5,
+		'bladder':2,
+		'age':0.5
+	},
+	sleep: {
+		'tiredness':-5
+	},
+	dying: {
+		'health':-5
+	}
 };
 ```
 
 Tiredness is fast (+10 p/s), to quickly demonstrate the sleep cycle.
-Decreasing age (eg. to 0.2) would run into the limitations of javascript's inbuilt numeric system. It will likely still work, just with odd rounding behaviours. A more flexible approach is out-of-scope for this PoC.
+Decreasing age rate (eg. to 0.2) would run into the limitations of javascript's inbuilt numeric system. It will likely still work, just with odd rounding behaviours. A more flexible approach is out-of-scope for this PoC.
+
+
+State change rules can also be found in internal_modules/Tamagotchi.js
+```
+var rules = {
+	death: 		(state) => { return (state.health <= 0 || state.age >= 100); },
+	dying: 		(state) => { return (state.hunger >= 100); },
+	exhaustion: (state) => { return (state.tiredness >= 80 && state.awake == true); },
+	poop: 		(state) => { return (state.awake == true && state.bladder > 20); },
+	wake: 		(state) => { return (state.awake == false && (state.tiredness <= 0 || state.bladder > 80)); },
+	notHungry:	(state) => { return (state.hunger <= 25 ); }
+};
+```
+
+The Tamagotchi:
+1) dies when it reaches 0 health or age 100.
+2) starts losing health when its hunger hits or exceeds 100.
+3) keeps trying to sleep when its exhaustion reaches 80. (currently no penalty for being over tired)
+4) will poop while awake and bladder exceeds 20.
+5) will wake up if tiredness reaches 0, or bladder exceeds 80.
+6) will refuse to eat if its hunger is not above 25. (a lazy counter to over-feeding)
 
 
 

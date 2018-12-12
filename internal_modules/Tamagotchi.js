@@ -6,14 +6,6 @@ var db = require('./dbFacade.js');
 var objHelpers = require('./helpers/objHelpers.js');
 var stateHandlers = require('./stateHandlers.js');
 
-/**
-* Primary class. Instantiating creates a Tamagotchi object
-**/
-
-
-/**
-* Privately scoped state
-**/
 var __state = {
 	'heartbeat':null
 };
@@ -22,22 +14,6 @@ var __state = {
 * Business Rules
 * Rate of change for Tamagotchi on each heartbeat
 **/
-/*
-const updateModifiers = {
-	'hunger':2,
-	'tiredness':10,
-	'bladder':2,
-	'age':0.5
-};
-
-const sleepModifier = {
-	'tiredness':-5
-};
-
-const dyingModifier = {
-	'health':-5
-};
-*/
 
 const modifiers = {
 	update: {
@@ -79,82 +55,13 @@ var rules = {
 };
 
 
-/**
-* === Privately scoped Functions ===
-**/ 
-/**
-function birth(defaultState) {
-	return dbFacade.create(defaultState);
-}
 
-
-function die(id, cb) {
-	if(__state.heartbeat !== null) {
-		clearInterval(__state.heartbeat);
-		__state.heartbeat = null;
-		cb({'type':'death', 'message':'Your Tamagotchi has died'});
-		return ({success: true, 'message':'Your Tamagotchi has died'});
-	}
-	return ({success: false, message: 'Your Tamagotchi was already dead!'});
-}
-
-function poop(id, cb) { 
-	return dbFacade.update(id, {'bladder' : 0})
-		.then((newState) => { 
-			cb({'type':'poop'}); 
-			return newState; 
-		});
-}
-
-function sleep(id, cb) {
-	return dbFacade.update(id, {'awake' : false})
-		.then((newState) => { 
-			cb({'type':'sleep', 'message':'Your Tamagotchi has fallen asleep'}); 
-			return newState; 
-		});
-}
-
-function wake(id, cb) {
-	return dbFacade.update(id, {'awake' : true})
-		.then((newState) => { 
-			cb({'type':'wake', 'message':'Your Tamagotchi has woken up'}); 
-			return newState; 
-		});
-}
-
-function tick(eventCallback) {
-	//console.log('heartbeat');
-	return dbFacade.getState(1)
-		.then((state) => { 
-			let modifiers = objHelpers.deepClone(updateModifiers);
-			if(state.awake == false) modifiers.tiredness = sleepModifier.tiredness;
-			if(rules.dying(state)) {
-				modifiers.health = dyingModifier.health;
-				eventCallback({'type':'dying'});
-			}
-			//if(__rules.wake(state)) this.awaken();
-			return dbFacade.increment( 1, state, modifiers); 
-		})
-		.then((state) => { 		
-			if(rules.death(state)) {
-				die(1, eventCallback); 
-				throw({'type':'updateLoopTermination'}); // Break from update loop.
-			}
-			return state;
-		})
-		.then((state) => { return (rules.wake(state) ? wake(1, eventCallback) : state); })
-		.then((state) => { return (rules.exhaustion(state) ? sleep(1, eventCallback) : state); })
-		.then((state) => { return (rules.poop(state) ? poop(1, eventCallback) : state); })
-		.catch(eventCallback);
-}**/
-
-
-
-// Note: Only one Tamagotchi of ID 1, yet coded to be extensible in the future.
 module.exports = class Tamagotchi {
 
 	constructor(eventCallback) {
 		this.callback = eventCallback;
+		this.rules = rules;				
+
 		stateHandlers.birth(db, defaultState)
 			.then(() => {
 				__state.heartbeat = setInterval(() => { 

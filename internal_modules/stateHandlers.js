@@ -7,6 +7,9 @@
 * However, this made them inaccessible to the test runner.
 *
 * Rather than exposing these private functions, or creating a temporary testing backdoor into the internal state of the main class, I pulled them out into this file.
+*
+* TODO: Refactor - Simplify callback process; Pass in function in place of dbFacade.
+* 		Some duplicate code - simplify data structure?
 * 
 **/ 
 
@@ -18,7 +21,7 @@ module.exports.birth = (db, defaultState) => {
 	return db.create(defaultState);
 };
 
-
+// TODO: Refactor to return newState for consistency with other state modules.
 var die = module.exports.die = (db, id, heartbeat, cb) => {
 	if(heartbeat !== null) {
 		clearInterval(heartbeat);
@@ -38,7 +41,6 @@ var poop = module.exports.poop = (db, id, cb) => {
 };
 
 var sleep = module.exports.sleep = (db, id, cb) => {
-	//console.log('sleep', db, id, cb);
 	return db.update(id, {'awake' : false})
 		.then((newState) => { 
 			cb({'type':'sleep', 'message':'Your Tamagotchi has fallen asleep'}); 
@@ -57,10 +59,9 @@ var wake = module.exports.wake = (db, id, cb) => {
 module.exports.tick = (db, heartbeat, rules, modifiers, eventCallback) => {
 	/**
 	 * On tick: 1) Get current state. 2) Update state based on modifiers (take into accound sleep).
-	 * 			Check for 3) Death, 4) Exhaustion, 5) Poop
+	 * 			Check for 3) Death, 4) Waking up 5) Exhaustion, 6) Poop
 	 */
-	//console.log(db, rules, modifiers, eventCallback);
-	//console.log(db.getState(1));
+	
 	return db.getState(1)
 		.then((state) => { 
 			let updates = objHelpers.deepClone(modifiers.update);

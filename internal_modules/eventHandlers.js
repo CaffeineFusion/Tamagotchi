@@ -1,5 +1,8 @@
 'use strict';
 //Event Handlers
+//
+// TODO: Refactor: Convert to pure functions. Return string output rather than outputting directly to console (IO).
+
 module.exports.onPoop = (event) => {
 	console.log('\n\
          (   )\n\
