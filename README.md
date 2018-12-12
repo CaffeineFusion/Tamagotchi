@@ -9,7 +9,6 @@ Javascript - Node.JS
 (Note: I've made liberal use of arrow functions, lambdas and Promises)
 
 
-
 ### System Requirements
 - node.js
 
@@ -82,7 +81,7 @@ npm test
 ## Design
 
 ### Project Specifications
-#### Necessary
+#### Necessary and Complete
 - Capable of being fed
 - Capable of being put to bed
 - Capable of going to sleep on its own, losing health from hunger and pooping on its own without prompting
@@ -97,16 +96,12 @@ npm test
 - Name the Tamagotchi
 - Update put to bed function to include an error when Tamagotchi is already awake
 - Age states
-- Move config to config.json.
+- Move config to config file
 - Update Architecture diagram with DBFacade
-- Update DB with death note.
-- Decimal safe numbers.
-- Fix unhandled Promises in test script.  (stateHandlers.js)
-- Update Documentation
-- Additional commentary in MockDB.js
+- Update DB with death note
+- Decimal safe numbers
 - Add more behaviorally specific update tests for DB. (MockDB.test.js)
 - Add sinon tests in stateHandlers
-- Fix pause idiosyncracy
 
 
 ### Architecture
