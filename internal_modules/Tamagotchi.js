@@ -138,7 +138,7 @@ module.exports = class Tamagotchi {
 	}
 
 	feed(cb) {
-		return getState(1)
+		return dbFacade.getState(1)
 			.then((state) => { return state.awake == false ? this.awaken(cb) : state; })	// Refactor with subhandler for callback. {cb} sufficient for now.
 			.then((state) => { 
 				//If our Tamagotchi is not hungry, callback with a failure message.
@@ -146,7 +146,7 @@ module.exports = class Tamagotchi {
 				if(__rules.notHungry(state))
 					return cb({'type':'feed', 'success':false, 'message':'Your Tamagotchi is not hungry right now [hunger <= 25]'});
 
-				return increment(1, state,  {'hunger':-25})
+				return dbFacade.increment(1, state,  {'hunger':-25})
 					.then(cb({'type':'feed', 'success':true, 'message':'Omnomnomnom'}));
 			});
 	}
@@ -160,7 +160,7 @@ module.exports = class Tamagotchi {
 	}
 
 	murder(cb) {
-		return die(1, () => {});
+		return die(1, (res) => { cb({'type':'murder'}); });
 	}
 
 	getStats() {
