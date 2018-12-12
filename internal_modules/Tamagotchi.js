@@ -11,6 +11,7 @@ var stateHandlers = require('./stateHandlers.js');
 * Rate of change for Tamagotchi on each heartbeat
 **/
 
+// modifiers - rates of change per tick given certain trigger
 const modifiers = {
 	update: {
 		'hunger':2,
@@ -59,6 +60,11 @@ module.exports = class Tamagotchi {
 		this.heartbeat = {};
 	}
 
+	/**
+	 * initialise - Initialise internal state (async DB call), then initiate game loop (heartbeat)
+	 * @param  {function} cb eventhandler to catch errors/messages
+	 * @return {Promise}     a Promise resolving to the Tamagotchi instance
+	 */
 	initialise(cb) {
 		var self = this;			
 
@@ -73,6 +79,13 @@ module.exports = class Tamagotchi {
 			.catch(cb);
 	}
 
+	/**
+	 * feed - attempt to feed Tamagotchi. Fail if dead or not hungry.
+	 * @param  {function} cb eventhandler to handle errors/messages
+	 * @return {Promise}     a Promise resolving to new internal state
+	 *
+	 * TODO: Refactor - simplify flow, extract code duplication, fix return state. Consider changing return type to Tamagotchi instance for chaining.
+	 */
 	feed(cb) {	//Refactor into a more functional pattern
 		return db.getState(1)
 			.then((state) => {
@@ -93,6 +106,13 @@ module.exports = class Tamagotchi {
 			.catch(cb);
 	}
 
+	/**
+	 * putToBed - attempt to put Tamagotchi to bed. Fail if dead.
+	 * @param  {Function} cb eventhandler to handle errors/messages
+	 * @return {Promise}     a Promise resolving to new internal state
+	 *
+	 * TODO: Handle for already sleeping.
+	 */
 	putToBed(cb) {
 		return db.getState(1)
 			.then((state) => {
@@ -104,6 +124,11 @@ module.exports = class Tamagotchi {
 			.catch(cb);
 	}
 
+	/**
+	 * awaken - attempt to wake Tamagotchi. Fail if dead.
+	 * @param  {Function} cb eventhandler to handle errors/messages
+	 * @return {Promise}     a Promise resolving to new internal state
+	 */
 	awaken(cb) {
 		return db.getState(1)
 			.then((state) => {
@@ -115,16 +140,32 @@ module.exports = class Tamagotchi {
 			.catch(cb);
 	}
 
+	/**
+	 * murder - brutally kill Tamagotchi. Override health, trigger death sequence
+	 * @param  {Function} cb eventhandler to handle errors/messages
+	 * @return {Promise}     a Promise resolving to new internal state
+	 */
 	murder(cb) {
 		return db.update(1, {'health' : 0})
 			.then(() => { return stateHandlers.die(db, 1, (res) => { cb({'type':'murder'}); }); })
 			.catch(cb);
 	}
 
+	/**
+	 * getStats - retrieve internal state of Tamagotchi
+	 * @return {Promise}     a Promise resolving to the internal state
+	 */
 	getStats() {
 		return db.getState(1);
 	}
 
+	/**
+	 * rename - attempt to rename Tamagotchi
+	 * @param  {string} name new name for Tamagotchi
+	 * @return {Promise}     a Promise resolving to new internal state
+	 *
+	 * TODO: Add interface in server.js, add safe input checking.
+	 */
 	rename(name) {
 		return db.update(1, {'name' : name});
 	}
