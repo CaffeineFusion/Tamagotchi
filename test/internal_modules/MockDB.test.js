@@ -6,6 +6,7 @@ var assert = chai.assert;
 var expect = chai.expect;
 
 var MockDB = require("../../internal_modules/MockDB.js");
+var objHelpers = require('../../internal_modules/helpers/objHelpers.js');
 
 chai.use(chaiAsPromised);
 chai.should();
@@ -46,9 +47,27 @@ describe('MockDB', function() {
 			return expect(db.create({}).should.eventually.deep.equal({}));
 		});
 
-		it('Empty object should not throw an error.', function() {
+		it('Check Default Tamagotchi retention', function() {
 			let db = new MockDB();
-			return expect(db.create({}).should.eventually.deep.equal({}));
+			return expect(db.create(defaultTamagotchi).should.eventually.deep.equal(defaultTamagotchi));
+		});
+
+		it('Database should permit overwrite', function() {
+			let db = new MockDB();
+			db.create(defaultTamagotchi)
+				.then()
+			return expect(db.create(defaultTamagotchi).should.eventually.deep.equal(defaultTamagotchi));
+		});
+
+		it('Deep cloning should break connection with origin object state', function() {
+			let db = new MockDB();
+			let temp = objHelpers.deepClone(defaultTamagotchi); 
+			return db.create(temp)
+				.then((obj) => {
+					temp.name = 'cheese';	// Update original object. Incorrect cloning would update db object.
+					console.log('checking name comparison');
+					return assert(obj.name != temp.name);
+				});
 		});
 	});
 
