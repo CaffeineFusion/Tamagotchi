@@ -1,7 +1,12 @@
 'use strict';
 //Event Handlers
-//
-// TODO: Refactor: Convert to pure functions. Return string output rather than outputting directly to console (IO).
+/**
+ * Collection of commandline output in response to certain events.
+ * Seperates out IO from the Business Logic of Tamagotchi.
+ * Events are triaged via the cb function at the bottom.
+ * 
+ *  TODO: Refactor: Convert to pure functions. Return string output rather than outputting directly to console (IO).
+ */
 
 module.exports.onPoop = (event) => {
 	console.log('\n\
@@ -94,7 +99,11 @@ module.exports.onSleep = (event) => {
 	}
 };
 
-// Callback that connects event handlers to custom triggers
+/**
+ * cb - a switching function which which redirects event triggers to supporting functions
+ * TODO: rename
+ * @param  {obj} event    an object describing the event
+ */
 module.exports.cb = (event) => {
 	switch(event.type) {
 		case 'death':
