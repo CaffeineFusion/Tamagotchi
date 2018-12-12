@@ -6,10 +6,6 @@ var db = require('./dbFacade.js');
 var objHelpers = require('./helpers/objHelpers.js');
 var stateHandlers = require('./stateHandlers.js');
 
-var __state = {
-	'heartbeat':null
-};
-
 /**
 * Business Rules
 * Rate of change for Tamagotchi on each heartbeat
@@ -59,13 +55,16 @@ module.exports = class Tamagotchi {
 
 	constructor(eventCallback) {
 		this.callback = eventCallback;
-		this.rules = rules;				
+		this.rules = rules;
+		this.heartbeat = {};	
+		var self = this;			
 
-		stateHandlers.birth(db, defaultState)
-			.then(() => {
-				__state.heartbeat = setInterval(() => { 
-					stateHandlers.tick(db, __state.heartbeat, rules, modifiers, eventCallback);
+		return stateHandlers.birth(db, defaultState)
+			.then((state) => {
+				self.heartbeat = setInterval(() => { 
+					stateHandlers.tick(db, self.heartbeat, rules, modifiers, eventCallback);		
 				}, 1000 );
+				return state;
 			});
 		//.then(() => {console.log('constructed!', this, Object.keys(this), this.feed); });
 	}
@@ -129,14 +128,17 @@ module.exports = class Tamagotchi {
 
 	// For testing purposes 
 	pause() {
-		clearInterval(__state.heartbeat);
-		__state.heartbeat = null;
+		console.log(this.heartbeat);
+		clearInterval(this.heartbeat);
+		console.log('interval cleared');
+		this.heartbeat = null;
+		console.log(this.heartbeat);
 	}
 
 	unpause() {
-		var cb = this.callback;
-		__state.heartbeat = setInterval(() => { 
-			stateHandlers.tick(db, __state.heartbeat, rules, modifiers, cb);
+		var self = this;	
+		self.heartbeat = setInterval(() => { 
+			stateHandlers.tick(db, self.heartbeat, rules, modifiers, self.cb);
 		}, 1000 );
 	}
 };

@@ -14,7 +14,7 @@ const statusTemplate = {'hunger':0.5,
 	'tiredness':0.5,
 	'bladder':0.5,
 	'age':0.01
-}
+};
 const defaultTamagotchi = {'id':1,
 	'name':'Tammy',
 	'health':100,
@@ -27,8 +27,11 @@ const defaultTamagotchi = {'id':1,
 
 
 describe('Tamagotchi.rules', function() {
-	let tamagotchi = new Tamagotchi();
-	tamagotchi.pause();
+	var tamagotchi;
+	before( () => {
+		tamagotchi= new Tamagotchi(() => {console.log('sanity check: tamagotchi should be paused in rules test'); });
+		tamagotchi.pause();
+	});
 	describe('death', function() {
 		it('health: Edge case, should not die on more than 0 health [0.5]', function() {
 			let state = { 'health':0.5, 'age':0 };
@@ -203,46 +206,44 @@ describe('Tamagotchi.rules', function() {
 			return assert(!tamagotchi.rules.notHungry(state));
 		});
 	});
+
+	after( () => {
+		tamagotchi = null;
+	});
 });
 
 
 
 //exposed methods constructor(cb), feed(cb), putToBed(cb), awaken(cb), murder(cb), getStats(cb) for testing
 describe('Tamagotchi', function() {
-	describe('getStats', function() {
-		it('New Tamagotchi should have default stats', function() {
-			let tamagotchi = new Tamagotchi();
-			tamagotchi.pause();
-			return expect(tamagotchi.getStats().should.eventually.deep.equal(defaultTamagotchi));
-		});
-	});
-
 	describe('feed', function() {
-		it('Tamagotchi should not be able to be fed below 25 hunger', function() {
-			let tamagotchi = new Tamagotchi();
+		let tamagotchi;
+		beforeEach(() => {
+			tamagotchi = new Tamagotchi(() => {console.log('sanity check: tamagotchi should be paused in feed test'); });
 			tamagotchi.pause();
-			tamagotchi.feed((res) => { console.log(res)})
-				.then(console.log);
+		});
+
+		it('Tamagotchi should not be able to be fed below 25 hunger', function() {
+			return assert(true == false); //Finish writing test.
+			//tamagotchi.feed((res) => { console.log(res)})
+			//	.then(console.log);
 			// Write spy function.
 			//return expect(tamagotchi.getStats().should.eventually.deep.equal(defaultTamagotchi));
 		});
 	});
 
+	describe('getStats', function() {
+		let tamagotchi;
+		beforeEach(() => {
+			tamagotchi = new Tamagotchi(() => {console.log('sanity check: tamagotchi should be paused in getStats test');});
+			tamagotchi.pause();
+		});
+		it('New Tamagotchi should have default stats', function() {
+			return expect(tamagotchi.getStats().should.eventually.deep.equal(defaultTamagotchi));
+		});
+	});
+
+
 	//describe()
 
 });
-/*describe('Tamagotchi.update()', function() {
-
-	it('Should update the Tamagotchi state by a given amount', function() {
-		var expectedOutput = {'id':1,
-			'name':'Tammy',
-			'health':100,
-			'hunger':0.5,
-			'tiredness':0.5,
-			'bladder':0.5,
-			'age':0.01,
-			'awake':true };
-
-		return expect(Tamagotchi.update().should.eventually.deep.equal(expectedOutput));
-	});
-});*/

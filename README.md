@@ -99,6 +99,9 @@ npm test
 - Fix unhandled Promises in test script.  (stateHandlers.js)
 - Update Documentation
 - Additional commentary in MockDB.js
+- Add more behaviorally specific update tests for DB. (MockDB.test.js)
+- Add sinon tests in stateHandlers
+- Fix pause idiosyncracy
 
 
 ### Architecture

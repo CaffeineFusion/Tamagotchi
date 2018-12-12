@@ -21,7 +21,8 @@ module.exports.birth = (db, defaultState) => {
 	return db.create(defaultState);
 };
 
-// TODO: Refactor to return newState for consistency with other state modules.
+// TODO: Refactor to return newState for consistency with other state modules. 
+// 		 Refactor callback in Tamagotchi so as not to need knowledge of heartbeat here.
 var die = module.exports.die = (db, id, heartbeat, cb) => {
 	if(heartbeat !== null) {
 		clearInterval(heartbeat);
@@ -61,7 +62,7 @@ module.exports.tick = (db, heartbeat, rules, modifiers, eventCallback) => {
 	 * On tick: 1) Get current state. 2) Update state based on modifiers (take into accound sleep).
 	 * 			Check for 3) Death, 4) Waking up 5) Exhaustion, 6) Poop
 	 */
-	
+	console.log(heartbeat, eventCallback);
 	return db.getState(1)
 		.then((state) => { 
 			let updates = objHelpers.deepClone(modifiers.update);
