@@ -55,7 +55,7 @@ module.exports.onFeed = (event) => {
              ,-=\'  /  |  \\  `=-.\n\
             :--..___________..--;\n\
              \\.,_____________,./\n');
-		console.log('Omnomnomnom!');
+		console.log('Omnomnomnom! -25 hunger');
 
 	}
 }; // ascii adapted from https://www.asciiart.eu/food-and-drinks/other - credit to Riitta Rasimus
