@@ -213,7 +213,18 @@ describe('Tamagotchi', function() {
 		it('New Tamagotchi should have default stats', function() {
 			let tamagotchi = new Tamagotchi();
 			tamagotchi.pause();
-			return expect(Tamagotchi.getStats().should.eventually.deep.equal(defaultTamagotchi));
+			return expect(tamagotchi.getStats().should.eventually.deep.equal(defaultTamagotchi));
+		});
+	});
+
+	describe('feed', function() {
+		it('Tamagotchi should not be able to be fed below 25 hunger', function() {
+			let tamagotchi = new Tamagotchi();
+			tamagotchi.pause();
+			tamagotchi.feed((res) => { console.log(res)})
+				.then(console.log);
+			// Write spy function.
+			//return expect(tamagotchi.getStats().should.eventually.deep.equal(defaultTamagotchi));
 		});
 	});
 
