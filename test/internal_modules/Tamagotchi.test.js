@@ -5,7 +5,7 @@ var chaiAsPromised = require('chai-as-promised');
 var assert = chai.assert;
 var expect = chai.expect;
 
-var Tamagotchi = require("../../internal_modules/Tamagotchi.js");
+var Tamagotchi = require('../../internal_modules/Tamagotchi.js');
 
 chai.use(chaiAsPromised);
 chai.should();
@@ -25,12 +25,21 @@ const defaultTamagotchi = {'id':1,
 	'awake':true 
 };
 
+function initTamagotchi(cb) {
+	return (new Tamagotchi(cb))
+		.initialise(cb);
+}
+
 
 describe('Tamagotchi.rules', function() {
 	var tamagotchi;
-	before( () => {
-		tamagotchi= new Tamagotchi(() => {console.log('sanity check: tamagotchi should be paused in rules test'); });
-		tamagotchi.pause();
+	before((done) => {
+		initTamagotchi(() => {console.log('sanity check: tamagotchi should be paused in rules test'); })
+			.then((t) => { 
+				tamagotchi = t;
+				tamagotchi.pause();
+				done();
+			});
 	});
 	describe('death', function() {
 		it('health: Edge case, should not die on more than 0 health [0.5]', function() {
@@ -214,16 +223,20 @@ describe('Tamagotchi.rules', function() {
 
 
 
-//exposed methods constructor(cb), feed(cb), putToBed(cb), awaken(cb), murder(cb), getStats(cb) for testing
+//exposed methods constructor(cb), feed(cb), putToBed(cb), awaken(cb), getStats(cb) for testing
 describe('Tamagotchi', function() {
 	describe('feed', function() {
 		let tamagotchi;
-		beforeEach(() => {
-			tamagotchi = new Tamagotchi(() => {console.log('sanity check: tamagotchi should be paused in feed test'); });
-			tamagotchi.pause();
+		beforeEach((done) => {
+			initTamagotchi(() => {console.log('sanity check: tamagotchi should be paused in feed test'); })
+				.then((t) => { 
+					tamagotchi = t;
+					tamagotchi.pause();
+					done();
+				});
 		});
 
-		it('Tamagotchi should not be able to be fed below 25 hunger', function() {
+		it('TODO: Need to write feeding tests', function() {
 			return assert(true == false); //Finish writing test.
 			//tamagotchi.feed((res) => { console.log(res)})
 			//	.then(console.log);
@@ -232,18 +245,34 @@ describe('Tamagotchi', function() {
 		});
 	});
 
+	//TODO: Elaborate.
 	describe('getStats', function() {
 		let tamagotchi;
-		beforeEach(() => {
-			tamagotchi = new Tamagotchi(() => {console.log('sanity check: tamagotchi should be paused in getStats test');});
-			tamagotchi.pause();
+		beforeEach((done) => {
+			initTamagotchi(() => {console.log('sanity check: tamagotchi should be paused in getStats test'); })
+				.then((t) => { 
+					tamagotchi = t;
+					tamagotchi.pause();
+					done();
+				});
 		});
+
 		it('New Tamagotchi should have default stats', function() {
 			return expect(tamagotchi.getStats().should.eventually.deep.equal(defaultTamagotchi));
 		});
 	});
 
 
-	//describe()
+	describe('putToBed', function() {
+		it('TODO: Need to write putToBed tests', function() {
+			return assert(true == false); //Finish writing test.
+		});
+	});
 
+
+	describe('awaken', function() {
+		it('TODO: Need to write awaken tests', function() {
+			return assert(true == false); //Finish writing test.
+		});
+	});
 });

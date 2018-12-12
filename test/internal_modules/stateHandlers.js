@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * Please See MockDB.test.js, helpers/jsonHelers.test.js or Tamagotchi.test.js for examples of finished tests.
+ */
+
+
 var chai = require('chai');
 var sinon = require('sinon');
 var assert = chai.assert;
@@ -40,8 +45,8 @@ const alternateTamagotchi = {'id':1,
 
 describe('stateHandlers', function() {
 	
-	it('Write tests for stateHandlers', function() {
-		return assert(true == false); // Todo item. Throw error.
+	it('TODO: Write tests for stateHandlers', function() {
+		return assert(true == false); // Todo item. Throw alert.
 	});
 
 	/*
@@ -51,7 +56,7 @@ describe('stateHandlers', function() {
 	 */
 
 	describe('birth', function() {
-		
+
 	});
 
 	describe('die', function() {

@@ -62,7 +62,7 @@ module.exports.tick = (db, heartbeat, rules, modifiers, eventCallback) => {
 	 * On tick: 1) Get current state. 2) Update state based on modifiers (take into accound sleep).
 	 * 			Check for 3) Death, 4) Waking up 5) Exhaustion, 6) Poop
 	 */
-	console.log(heartbeat, eventCallback);
+	//console.log(heartbeat, eventCallback);
 	return db.getState(1)
 		.then((state) => { 
 			let updates = objHelpers.deepClone(modifiers.update);

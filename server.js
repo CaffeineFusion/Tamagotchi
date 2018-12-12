@@ -40,13 +40,18 @@ function welcome(tamagotchi) {
 		.then(() => { console.log(instructions); } );
 }
 
-function initTamagotchi() {
-	return new Tamagotchi(eventHandlers.cb);
+function initTamagotchi(cb) {
+	let tamagotchi = new Tamagotchi(cb);
+	return tamagotchi.initialise(cb);
 }
 
 
-t = initTamagotchi();
-welcome(t);
+initTamagotchi(eventHandlers.cb)
+	.then((tamagotchi) => {
+		t = tamagotchi;
+		return tamagotchi;
+	})
+	.then(welcome);
 
 function terminate() {
 	t.murder(eventHandlers.cb);
@@ -66,6 +71,13 @@ replServer.context.help = () => {console.log(instructions);};
 replServer.context.getStatus = () => {t.getStats().then(console.log);};
 replServer.context.putToBed = () => {t.putToBed(eventHandlers.cb);};
 replServer.context.murder = () => {t.murder(eventHandlers.cb);};     //not for the faint of heart
-replServer.context.adoptNew = () => {t = initTamagotchi(); welcome(t);};
+replServer.context.adoptNew = () => {
+	initTamagotchi(eventHandlers.cb)
+		.then((tamagotchi) => {
+			t = tamagotchi;
+			return tamagotchi;
+		})
+		.then(welcome);
+};
 
 

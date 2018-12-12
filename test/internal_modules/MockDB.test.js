@@ -50,19 +50,20 @@ describe('MockDB', function() {
 	});
 
 	describe('create()', function() {
+		let db;
+		beforeEach(() => {
+			 db = new MockDB();
+		});
 
 		it('Empty object should not throw an error.', function() {
-			let db = new MockDB();
 			return expect(db.create({}).should.eventually.deep.equal({}));
 		});
 
 		it('Check Default Tamagotchi retention', function() {
-			let db = new MockDB();
 			return expect(db.create(defaultTamagotchi).should.eventually.deep.equal(defaultTamagotchi));
 		});
 
 		it('Database should permit overwrite', function() {
-			let db = new MockDB();
 			db.create(defaultTamagotchi)
 				.then(() => {
 					return expect(db.create(alternateTamagotchi).should.eventually.deep.equal(alternateTamagotchi));
@@ -70,17 +71,15 @@ describe('MockDB', function() {
 		});
 
 		it('Deep cloning should break connection with origin object state', function() {
-			let db = new MockDB();
 			let temp = objHelpers.deepClone(defaultTamagotchi); 
 			db.create(temp)
 				.then((obj) => {
 					temp.name = 'cheese';	// Update original object. Incorrect cloning would also update db object.
-					return assert(obj.should.eventually.deep.equal(defaultTamagotchi));
+					return expect(obj.should.deep.equal(defaultTamagotchi));
 				});
 		});
 
 		it('Deep cloning should break connection database object and returned value', function() {
-			let db = new MockDB();
 			db.create(defaultTamagotchi)
 				.then((obj) => {
 					obj.name = 'cheese';	// Update returned object. Incorrect cloning would also update db object
@@ -91,38 +90,38 @@ describe('MockDB', function() {
 
 
 	describe('update()', function() {
+		let db;
+		beforeEach(() => {
+			 db = new MockDB();
+		});
+
 
 		it('Empty object should not throw an error.', function() {
-			let db = new MockDB();
-			return expect(db.update({}).should.eventually.deep.equal({}));
+			return expect(db.update(1, {}).should.eventually.deep.equal({}));
 		});
 
 		it('Check Default Tamagotchi retention', function() {
-			let db = new MockDB();
-			return expect(db.update(defaultTamagotchi).should.eventually.deep.equal(defaultTamagotchi));
+			return expect(db.update(1, defaultTamagotchi).should.eventually.deep.equal(defaultTamagotchi));
 		});
 
 		it('Database should permit overwrite', function() {
-			let db = new MockDB();
-			db.update(defaultTamagotchi)
+			db.update(1, defaultTamagotchi)
 				.then(() => {
-					return expect(db.update(alternateTamagotchi).should.eventually.deep.equal(alternateTamagotchi));
+					return expect(db.update(1, alternateTamagotchi).should.eventually.deep.equal(alternateTamagotchi));
 				});
 		});
 
 		it('Deep cloning should break connection with origin object state', function() {
-			let db = new MockDB();
 			let temp = objHelpers.deepClone(defaultTamagotchi); 
-			db.update(temp)
+			db.update(1, temp)
 				.then((obj) => {
 					temp.name = 'cheese';	// Update original object. Incorrect cloning would also update db object.
-					return assert(obj.should.eventually.deep.equal(defaultTamagotchi));
+					return expect(obj.should.deep.equal(defaultTamagotchi));
 				});
 		});
 
 		it('Deep cloning should break connection database object and returned value', function() {
-			let db = new MockDB();
-			db.update(defaultTamagotchi)
+			db.update(1, defaultTamagotchi)
 				.then((obj) => {
 					obj.name = 'cheese';	// Update returned object. Incorrect cloning would also update db object
 					return expect(db.get(1).should.eventually.deep.equal(defaultTamagotchi));

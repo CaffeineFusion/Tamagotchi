@@ -68,6 +68,11 @@ The Tamagotchi:
 
 
 ### Testing the Code
+Test Coverage is incomplete.  
+Tests can be found in the test folder.  
+For good examples, please see MockDB.test.js, jsonHelpers.test.js and Tamagotchi.test.js  
+
+!Note: Areas where there is currently no test coverage have been marked with an assertion error in the Mocha output. This was intentional.  
 
 ```
 npm install

@@ -56,17 +56,21 @@ module.exports = class Tamagotchi {
 	constructor(eventCallback) {
 		this.callback = eventCallback;
 		this.rules = rules;
-		this.heartbeat = {};	
+		this.heartbeat = {};
+	}
+
+	initialise(cb) {
 		var self = this;			
 
 		return stateHandlers.birth(db, defaultState)
 			.then((state) => {
 				self.heartbeat = setInterval(() => { 
-					stateHandlers.tick(db, self.heartbeat, rules, modifiers, eventCallback);		
+					stateHandlers.tick(db, self.heartbeat, rules, modifiers, self.callback);		
 				}, 1000 );
 				return state;
-			});
-		//.then(() => {console.log('constructed!', this, Object.keys(this), this.feed); });
+			})
+			.then(() => { return self; })
+			.catch(cb);
 	}
 
 	feed(cb) {	//Refactor into a more functional pattern
@@ -128,11 +132,8 @@ module.exports = class Tamagotchi {
 
 	// For testing purposes 
 	pause() {
-		console.log(this.heartbeat);
 		clearInterval(this.heartbeat);
-		console.log('interval cleared');
 		this.heartbeat = null;
-		console.log(this.heartbeat);
 	}
 
 	unpause() {
