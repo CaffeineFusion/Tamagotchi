@@ -25,17 +25,6 @@ const defaultTamagotchi = {'id':1,
 	'awake':true 
 };
 
-/**
- * var rules = {
-	death: 		(state) => { return (state.health <= 0 || state.age >= 100); },
-	dying: 		(state) => { return (state.hunger >= 100); },
-	exhaustion: (state) => { return (state.tiredness >= 80 && state.awake == true); },
-	poop: 		(state) => { return (state.awake == true && state.bladder > 20); },
-	wake: 		(state) => { return (state.awake == false && (state.tiredness <= 0 || state.bladder > 80)); },
-	notHungry:	(state) => { return (state.hunger <= 25 ); }
-};
- */
-
 
 describe('Tamagotchi.rules', function() {
 	let tamagotchi = new Tamagotchi();
@@ -217,6 +206,20 @@ describe('Tamagotchi.rules', function() {
 });
 
 
+
+//exposed methods constructor(cb), feed(cb), putToBed(cb), awaken(cb), murder(cb), getStats(cb) for testing
+describe('Tamagotchi', function() {
+	describe('getStats', function() {
+		it('New Tamagotchi should have default stats', function() {
+			let tamagotchi = new Tamagotchi();
+			tamagotchi.pause();
+			return expect(Tamagotchi.getStats().should.eventually.deep.equal(defaultTamagotchi));
+		});
+	});
+
+	//describe()
+
+});
 /*describe('Tamagotchi.update()', function() {
 
 	it('Should update the Tamagotchi state by a given amount', function() {

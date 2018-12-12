@@ -55,7 +55,6 @@ var rules = {
 };
 
 
-
 module.exports = class Tamagotchi {
 
 	constructor(eventCallback) {
