@@ -152,10 +152,12 @@ module.exports = class Tamagotchi {
 	}
 
 	feed(cb) {
+		console.log('feed');
 		return dbFacade.getState(1)
 			.then((state) => {
 				if(rules.death(state)) 
 					throw({'type':'feed', 'success':false, 'message':'Your Tamagotchi has died! We can not feed it!'}); 
+				return state;
 			})
 			.then((state) => { return state.awake == false ? this.awaken(cb) : state; })	// Refactor with subhandler for callback. {cb} sufficient for now.
 			.then((state) => { 
@@ -175,6 +177,7 @@ module.exports = class Tamagotchi {
 			.then((state) => {
 				if(rules.death(state)) 
 					throw({'type':'putToBed', 'success':false, 'message':'Your Tamagotchi has died! We can not put it to bed!'}); 
+				return state;
 			})
 			.then(() => { sleep(1, cb); })
 			.catch(cb);
@@ -185,6 +188,7 @@ module.exports = class Tamagotchi {
 			.then((state) => {
 				if(rules.death(state)) 
 					throw({'type':'wake', 'success':false, 'message':'Your Tamagotchi has died! We can not wake it up!'}); 
+				return state;
 			})
 			.then(() => { wake(1, cb); })
 			.catch(cb);
