@@ -49,7 +49,7 @@ t = initTamagotchi();
 welcome(t);
 
 function terminate() {
-	t.murder(eventhandlers.cb);
+	t.murder(eventHandlers.cb);
 }
 
 var replServer = repl.start({ prompt: 'Tamagotchi > ' })

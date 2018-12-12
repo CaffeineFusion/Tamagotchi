@@ -38,6 +38,7 @@ var poop = module.exports.poop = (db, id, cb) => {
 };
 
 var sleep = module.exports.sleep = (db, id, cb) => {
+	//console.log('sleep', db, id, cb);
 	return db.update(id, {'awake' : false})
 		.then((newState) => { 
 			cb({'type':'sleep', 'message':'Your Tamagotchi has fallen asleep'}); 
@@ -53,17 +54,19 @@ var wake = module.exports.wake = (db, id, cb) => {
 		});
 };
 
-module.exports.tick = (db, rules, modifiers, eventCallback) => {
+module.exports.tick = (db, heartbeat, rules, modifiers, eventCallback) => {
 	/**
 	 * On tick: 1) Get current state. 2) Update state based on modifiers (take into accound sleep).
 	 * 			Check for 3) Death, 4) Exhaustion, 5) Poop
 	 */
+	//console.log(db, rules, modifiers, eventCallback);
+	//console.log(db.getState(1));
 	return db.getState(1)
 		.then((state) => { 
 			let updates = objHelpers.deepClone(modifiers.update);
-			if(state.awake == false) modifiers.tiredness = modifiers.sleep.tiredness;
+			if(state.awake == false) updates.tiredness = modifiers.sleep.tiredness;
 			if(rules.dying(state)) {
-				modifiers.health = modifiers.dying.health;
+				updates.health = modifiers.dying.health;
 				eventCallback({'type':'dying'});
 			}
 			//if(__rules.wake(state)) this.awaken();
@@ -71,13 +74,13 @@ module.exports.tick = (db, rules, modifiers, eventCallback) => {
 		})
 		.then((state) => { 		
 			if(rules.death(state)) {
-				die(1, eventCallback); 
+				die(db, 1, heartbeat, eventCallback); 
 				throw({'type':'updateLoopTermination'}); // Break from update loop.
 			}
 			return state;
 		})
-		.then((state) => { return (rules.wake(state) ? wake(1, eventCallback) : state); })
-		.then((state) => { return (rules.exhaustion(state) ? sleep(1, eventCallback) : state); })
-		.then((state) => { return (rules.poop(state) ? poop(1, eventCallback) : state); })
+		.then((state) => { return (rules.wake(state) ? wake(db, 1, eventCallback) : state); })
+		.then((state) => { return (rules.exhaustion(state) ? sleep(db, 1, eventCallback) : state); })
+		.then((state) => { return (rules.poop(state) ? poop(db, 1, eventCallback) : state); })
 		.catch(eventCallback);
 };

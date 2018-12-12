@@ -2,8 +2,9 @@
 
 // var fs = require('fs');
 // var db = new (require('./MockDB.js'))();
-var dbFacade = require('./dbFacade.js');
+var db = require('./dbFacade.js');
 var objHelpers = require('./helpers/objHelpers.js');
+var stateHandlers = require('./stateHandlers.js');
 
 /**
 * Primary class. Instantiating creates a Tamagotchi object
@@ -21,6 +22,7 @@ var __state = {
 * Business Rules
 * Rate of change for Tamagotchi on each heartbeat
 **/
+/*
 const updateModifiers = {
 	'hunger':2,
 	'tiredness':10,
@@ -34,6 +36,22 @@ const sleepModifier = {
 
 const dyingModifier = {
 	'health':-5
+};
+*/
+
+const modifiers = {
+	update: {
+		'hunger':2,
+		'tiredness':5,
+		'bladder':2,
+		'age':0.5
+	},
+	sleep: {
+		'tiredness':-5
+	},
+	dying: {
+		'health':-5
+	}
 };
 
 const defaultState = {'id':1,
@@ -64,7 +82,7 @@ var rules = {
 /**
 * === Privately scoped Functions ===
 **/ 
-
+/**
 function birth(defaultState) {
 	return dbFacade.create(defaultState);
 }
@@ -105,10 +123,6 @@ function wake(id, cb) {
 }
 
 function tick(eventCallback) {
-	/**
-	 * On tick: 1) Get current state. 2) Update state based on modifiers (take into accound sleep).
-	 * 			Check for 3) Death, 4) Exhaustion, 5) Poop
-	 */
 	//console.log('heartbeat');
 	return dbFacade.getState(1)
 		.then((state) => { 
@@ -132,7 +146,7 @@ function tick(eventCallback) {
 		.then((state) => { return (rules.exhaustion(state) ? sleep(1, eventCallback) : state); })
 		.then((state) => { return (rules.poop(state) ? poop(1, eventCallback) : state); })
 		.catch(eventCallback);
-}
+}**/
 
 
 
@@ -141,17 +155,17 @@ module.exports = class Tamagotchi {
 
 	constructor(eventCallback) {
 		this.callback = eventCallback;
-		birth(defaultState)
+		stateHandlers.birth(db, defaultState)
 			.then(() => {
 				__state.heartbeat = setInterval(() => { 
-					tick(eventCallback);
+					stateHandlers.tick(db, __state.heartbeat, rules, modifiers, eventCallback);
 				}, 1000 );
 			});
 		//.then(() => {console.log('constructed!', this, Object.keys(this), this.feed); });
 	}
 
-	feed(cb) {
-		return dbFacade.getState(1)
+	feed(cb) {	//Refactor into a more functional pattern
+		return db.getState(1)
 			.then((state) => {
 				if(rules.death(state)) 
 					throw({'type':'feed', 'success':false, 'message':'Your Tamagotchi has died! We can not feed it!'}); 
@@ -164,46 +178,46 @@ module.exports = class Tamagotchi {
 				if(rules.notHungry(state))
 					return cb({'type':'feed', 'success':false, 'message':'Your Tamagotchi is not hungry right now [hunger <= 25]'});
 
-				return dbFacade.increment(1, state,  {'hunger':-25})
+				return db.increment(1, state,  {'hunger':-25})
 					.then(cb({'type':'feed', 'success':true, 'message':'Omnomnomnom'}));
 			})
 			.catch(cb);
 	}
 
 	putToBed(cb) {
-		return dbFacade.getState(1)
+		return db.getState(1)
 			.then((state) => {
 				if(rules.death(state)) 
 					throw({'type':'putToBed', 'success':false, 'message':'Your Tamagotchi has died! We can not put it to bed!'}); 
 				return state;
 			})
-			.then(() => { return sleep(1, cb); })
+			.then(() => { return stateHandlers.sleep(db, 1, cb); })
 			.catch(cb);
 	}
 
 	awaken(cb) {
-		return dbFacade.getState(1)
+		return db.getState(1)
 			.then((state) => {
 				if(rules.death(state)) 
 					throw({'type':'wake', 'success':false, 'message':'Your Tamagotchi has died! We can not wake it up!'}); 
 				return state;
 			})
-			.then((state) => { return wake(1, cb); })
+			.then((state) => { return stateHandlers.wake(db, 1, cb); })
 			.catch(cb);
 	}
 
 	murder(cb) {
-		return dbFacade.update(1, {'health' : 0})
-			.then(() => {die(1, (res) => { cb({'type':'murder'}); }); })
+		return db.update(1, {'health' : 0})
+			.then(() => { return stateHandlers.die(db, 1, (res) => { cb({'type':'murder'}); }); })
 			.catch(cb);
 	}
 
 	getStats() {
-		return dbFacade.getState(1);
+		return db.getState(1);
 	}
 
 	rename(name) {
-		return dbFacade.update(1, {'name' : name});
+		return db.update(1, {'name' : name});
 	}
 
 
@@ -214,8 +228,9 @@ module.exports = class Tamagotchi {
 	}
 
 	unpause() {
+		var cb = this.callback;
 		__state.heartbeat = setInterval(() => { 
-			tick(this.callback);
+			stateHandlers.tick(db, __state.heartbeat, rules, modifiers, cb);
 		}, 1000 );
 	}
 };
