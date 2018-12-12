@@ -31,8 +31,12 @@ module.exports.onDeath = (event) => {
 	console.log('To adopt a new Tamagotchi, use the command adoptNew()');
 }; // ascii adapted from http://ascii.co.uk/art/tombstone
 
+module.exports.onDying = (event) => {
+	console.log('Ohno! Your Tamagotchi is losing health, quick - feed it!');
+}; 
+
 module.exports.onFeed = (event) => {
-	if(event.success != true) {
+	if(event.success == false) {
 		console.log(event.message);
 	}
 	else {
@@ -50,7 +54,11 @@ module.exports.onFeed = (event) => {
 
 
 module.exports.onWake = (event) => {
-	console.log(' \n\
+	if(event.success == false) {
+		console.log(event.message);
+	}
+	else {
+		console.log(' \n\
          \'\n\
         \\  ,  /\n\
     \' ,___/_\\___, \'\n\
@@ -61,17 +69,23 @@ module.exports.onWake = (event) => {
         /  `  \\\n\
            .\n\
 		');
-	console.log(event.message);
+		console.log(event.message);
+	}
 }; // ascii adapted from https://www.asciiart.eu/nature/sun
 
 module.exports.onSleep = (event) => {
-	console.log(' \n\
+	if(event.success == false) {
+		console.log(event.message);
+	}
+	else {
+		console.log(' \n\
                              Z \n\
                        Z \n\
                     z \n\
                   z \n\
-	');
-	console.log(event.message);
+		');
+		console.log(event.message);
+	}
 };
 
 // Callback that connects event handlers to custom triggers
@@ -82,6 +96,9 @@ module.exports.cb = (event) => {
 			break;
 		case 'death':
 			module.exports.onDeath(event);
+			break;
+		case 'dying':
+			module.exports.onDying(event);
 			break;
 		case 'feed':
 			module.exports.onFeed(event);

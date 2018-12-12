@@ -23,13 +23,14 @@ Built by Owen Smith
 - Refactor Ternary operators in Tamagotchi
 - Name propagation.
 - Rewrite Tamagotchi state management to ensure that death terminates state update flow.
-- Add Put To Bed functionality.
+- Update put to bed function to include an error when Tamagotchi is already awake!
 - Fix feeding whilst asleep and not hungry bug.
 - "losing health from hunger!"
 - Age states
 - Move config to config.json.
 - Update Architecture diagram with DBFacade
 - Update DB with death note.
+- Check for death state.
 
 
 ### Wishlist

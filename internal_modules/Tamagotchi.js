@@ -68,7 +68,7 @@ var __state = {
 * Rate of change for Tamagotchi on each heartbeat
 **/
 const __updateModifiers = {
-	'hunger':2,
+	'hunger':20,
 	'tiredness':10,
 	'bladder':2,
 	'age':0.5
@@ -99,7 +99,7 @@ const __defaultState = {'id':1,
  */
 var __rules = {
 	death: 		(state) => { return (state.health <= 0 || state.age >= 100); },
-	dying: 		(state) => { return (state.hunger >= 100 || state.bladder >= 100); },
+	dying: 		(state) => { return (state.hunger >= 100); },
 	exhaustion: (state) => { return (state.tiredness >= 80 && state.awake == true); },
 	poop: 		(state) => { return (state.awake == true && state.bladder > 20); },
 	wake: 		(state) => { return (state.awake == false && (state.tiredness <= 0 || state.bladder > 80)); },
@@ -124,7 +124,10 @@ module.exports = class Tamagotchi {
 							//console.log(state);	
 							let modifiers = objHelpers.deepClone(__updateModifiers);
 							if(state.awake == false) modifiers.tiredness = __sleepModifier.tiredness;
-							if(__rules.dying(state)) modifiers.health = __dyingModifier.health;
+							if(__rules.dying(state)) {
+								modifiers.health = __dyingModifier.health;
+								eventCallback({'type':'dying'});
+							}
 							//if(__rules.wake(state)) this.awaken();
 							return dbFacade.increment( 1, state, modifiers); 
 						})
@@ -139,6 +142,10 @@ module.exports = class Tamagotchi {
 
 	feed(cb) {
 		return dbFacade.getState(1)
+			.then((state) => {
+				if(__rules.death(state)) 
+					throw({'type':'feed', 'success':false, 'message':'Your Tamagotchi has died! We can not feed it!'}); 
+			})
 			.then((state) => { return state.awake == false ? this.awaken(cb) : state; })	// Refactor with subhandler for callback. {cb} sufficient for now.
 			.then((state) => { 
 				//If our Tamagotchi is not hungry, callback with a failure message.
@@ -148,15 +155,26 @@ module.exports = class Tamagotchi {
 
 				return dbFacade.increment(1, state,  {'hunger':-25})
 					.then(cb({'type':'feed', 'success':true, 'message':'Omnomnomnom'}));
-			});
+			})
+			.catch(cb);
 	}
 
 	putToBed(cb) {
-		return dbFacade.update(1, {'awake' : false});
+		return dbFacade.update(1, {'awake' : false})
+			.then((state) => {
+				if(__rules.death(state)) 
+					throw({'type':'putToBed', 'success':false, 'message':'Your Tamagotchi has died! We can not put it to bed!'}); 
+			})
+			.catch(cb);
 	}
 
 	awaken(cb) {
-		return wake(1, cb);
+		return wake(1, cb)
+			.then((state) => {
+				if(__rules.death(state)) 
+					throw({'type':'wake', 'success':false, 'message':'Your Tamagotchi has died! We can not wake it up!'}); 
+			})
+			.catch(cb);;
 	}
 
 	murder(cb) {
