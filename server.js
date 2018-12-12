@@ -25,6 +25,7 @@ You can interact with your Tamagotchi by typing the following commands: \n\
 feed() : This feeds your Tamagotchi a random item of food (-25 hunger) \n\
 putToBed() : This puts your Tamagotchi to bed allowing it recover energy (-5 tiredness p/s) \n\
 getStatus() : This shows you all the current information about your Tamagotchi \n\
+help() : Displays this instruction list\n\
 \n\
 Pressing Ctrl+C will exit the application, putting your Tamagotchi up for adoption.\n\
 Have fun!\n\
@@ -48,7 +49,7 @@ t = initTamagotchi();
 welcome(t);
 
 function terminate() {
-	t.murder();
+	t.murder(eventhandlers.cb);
 }
 
 var replServer = repl.start({ prompt: 'Tamagotchi > ' })
@@ -61,8 +62,10 @@ var replServer = repl.start({ prompt: 'Tamagotchi > ' })
 * TODO: Add Error handling and prompts.
 **/
 replServer.context.feed = () => {t.feed(eventHandlers.cb);};
+replServer.context.help = () => {console.log(instructions);};
 replServer.context.getStatus = () => {t.getStats().then(console.log);};
 replServer.context.putToBed = () => {t.putToBed(eventHandlers.cb);};
 replServer.context.murder = () => {t.murder(eventHandlers.cb);};     //not for the faint of heart
 replServer.context.adoptNew = () => {t = initTamagotchi(); welcome(t);};
+
 

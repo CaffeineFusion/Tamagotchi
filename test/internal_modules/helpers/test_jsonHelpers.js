@@ -119,7 +119,7 @@ describe('jsonHelpers.update()', function() {
 	it('Should handle booleans', function() {
 		let modifiers = {'awake':false};
 		let expectedOutput = jsonHelpers.deepClone(basicState);
-		expectedOutput.health = false;
+		expectedOutput.awake = false;
 		return expect(jsonHelpers.update(basicState, modifiers).should.deep.equal(expectedOutput));
 	});
 

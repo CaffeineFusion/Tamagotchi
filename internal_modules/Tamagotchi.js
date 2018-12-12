@@ -112,7 +112,6 @@ function tick(eventCallback) {
 	//console.log('heartbeat');
 	return dbFacade.getState(1)
 		.then((state) => { 
-			//console.log(state);	
 			let modifiers = objHelpers.deepClone(updateModifiers);
 			if(state.awake == false) modifiers.tiredness = sleepModifier.tiredness;
 			if(rules.dying(state)) {
@@ -152,7 +151,6 @@ module.exports = class Tamagotchi {
 	}
 
 	feed(cb) {
-		console.log('feed');
 		return dbFacade.getState(1)
 			.then((state) => {
 				if(rules.death(state)) 
@@ -179,7 +177,7 @@ module.exports = class Tamagotchi {
 					throw({'type':'putToBed', 'success':false, 'message':'Your Tamagotchi has died! We can not put it to bed!'}); 
 				return state;
 			})
-			.then(() => { sleep(1, cb); })
+			.then(() => { return sleep(1, cb); })
 			.catch(cb);
 	}
 
@@ -190,7 +188,7 @@ module.exports = class Tamagotchi {
 					throw({'type':'wake', 'success':false, 'message':'Your Tamagotchi has died! We can not wake it up!'}); 
 				return state;
 			})
-			.then(() => { wake(1, cb); })
+			.then((state) => { return wake(1, cb); })
 			.catch(cb);
 	}
 
