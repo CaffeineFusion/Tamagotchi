@@ -15,6 +15,11 @@ module.exports = class MockDB {
 	constructor() {
 	}
 
+	/**
+	 * get - get Database entry {id} - hardcoded. id === 1. Returns full "database" object.
+	 * @param  {int} id identifier for record
+	 * @return {obj} record as javascript object
+	 */
 	get(id) {
 		return new Promise((resolve, reject) => {
 			//console.log('id: ', id);
