@@ -46,7 +46,7 @@ const alternateTamagotchi = {'id':1,
 describe('stateHandlers', function() {
 	
 	it('TODO: Write tests for stateHandlers', function() {
-		return assert(true == false); // Todo item. Throw alert.
+		return assert.fail('Incomplete test coverage.'); //Finish writing tests.
 	});
 
 	/*

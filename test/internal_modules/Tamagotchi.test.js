@@ -237,7 +237,7 @@ describe('Tamagotchi', function() {
 		});
 
 		it('TODO: Need to write feeding tests', function() {
-			return assert(true == false); //Finish writing test.
+			return assert.fail('Incomplete test coverage.'); //Finish writing tests.
 			//tamagotchi.feed((res) => { console.log(res)})
 			//	.then(console.log);
 			// Write spy function.
@@ -265,14 +265,14 @@ describe('Tamagotchi', function() {
 
 	describe('putToBed', function() {
 		it('TODO: Need to write putToBed tests', function() {
-			return assert(true == false); //Finish writing test.
+			return assert.fail('Incomplete test coverage.'); //Finish writing tests.
 		});
 	});
 
 
 	describe('awaken', function() {
 		it('TODO: Need to write awaken tests', function() {
-			return assert(true == false); //Finish writing test.
+			return assert.fail('Incomplete test coverage.'); //Finish writing tests.
 		});
 	});
 });

@@ -16,7 +16,7 @@ chai.use(chaiAsPromised);
 describe('server - test UI and initialisation.', function() {
 	
 	it('TODO: Write tests for server.', function() {
-		return assert(true == false); // Todo item. Throw error.
+		return assert.fail('Incomplete test coverage.'); //Finish writing tests.
 	});
 
 });

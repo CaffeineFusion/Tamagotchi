@@ -16,7 +16,7 @@ chai.should();
 describe('eventHandlers - requires refactor to pure functions to test effectively.', function() {
 	
 	it('TODO: Refactor EventHandlers into pure functions to allow unit testing.', function() {
-		return assert(true == false); // Todo item. Throw error.
+		return assert.fail('Incomplete test coverage.'); //Finish writing tests.
 	});
 
 });

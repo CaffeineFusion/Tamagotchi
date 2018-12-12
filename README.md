@@ -8,7 +8,10 @@ Built by Owen Smith
 
 ### Running the Code
 
-`npm start`
+```
+git clone https://github.com/CaffeineFusion/Tamagotchi.git
+npm start
+```
 
 On creation, the Tamagotchi runs on a 1 second timer.   
 Three main functions are provided: feed(), putToBed(), and getStatus()  
