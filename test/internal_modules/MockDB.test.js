@@ -64,7 +64,7 @@ describe('MockDB', function() {
 			let temp = objHelpers.deepClone(defaultTamagotchi); 
 			return db.create(temp)
 				.then((obj) => {
-					temp.name = 'cheese';	// Update original object. Incorrect cloning would update db object.
+					temp.name = 'cheese';	// Update original object. Incorrect cloning would also update db object.
 					console.log('checking name comparison');
 					return assert(obj.name != temp.name);
 				});

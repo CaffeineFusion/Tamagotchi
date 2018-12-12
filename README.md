@@ -98,6 +98,7 @@ npm test
 - Decimal safe numbers.
 - Fix unhandled Promises in test script.  (stateHandlers.js)
 - Update Documentation
+- Additional commentary in MockDB.js
 
 
 ### Architecture

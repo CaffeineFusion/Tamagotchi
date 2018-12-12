@@ -24,15 +24,15 @@ module.exports = class MockDB {
 		return new Promise((resolve, reject) => {
 			//console.log('id: ', id);
 			//console.log('database: ', database);
-			if(database) return resolve(database);
+			if(database) return resolve(objHelpers.deepClone(database));	// Deep Clone to ensure decoupling with output (breaks reference to original)
 			else return reject({'message':'No Tamgotchi ' + id + ' found!'});
 		});
 	}
 
 	update(id, d) {
 		return new Promise((resolve, reject) => {
-			database = d;
-			return resolve(database);
+			database = objHelpers.deepClone(d);					// DeepClone Required to decouple the database instance from the template object. Otherwise, updating the database would update the template object as well!
+			return resolve(objHelpers.deepClone(database));		// Deep Clone to ensure decoupling with output (breaks reference to original)
 		});
 	}
 
@@ -42,6 +42,6 @@ module.exports = class MockDB {
 	 * @return {[type]}   [description]
 	 */
 	create(d) {
-		return this.update(1, objHelpers.deepClone(d));	//DeepClone Required to decouple the database instance from the template object. Otherwise, updating the database would update the template object as well!
+		return this.update(1, d);	
 	}
 };
