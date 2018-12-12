@@ -32,20 +32,38 @@ Have fun!\n\
 ';
 
 /**
- * welcome(tamagotchi) - display initial
- * @param  {object} tamagotchi [description]
+ * welcome(tamagotchi) - display initial state and welcome message.
+ * @param  {object} tamagotchi 
+ * 
+ * Refactor: to use already retrieved state from initTamagotchi.
  */
 function welcome(tamagotchi) {
 	return tamagotchi.getStats().then(console.log)
 		.then(() => { console.log(instructions); } );
 }
 
+/**
+ * initTamagotchi - create new Tamagotchi, and initialise it.
+ * @param  {Function} cb [description]
+ * @return {Promise}     a Promise resolving to initial internal state.
+ */
 function initTamagotchi(cb) {
 	let tamagotchi = new Tamagotchi(cb);
 	return tamagotchi.initialise(cb);
 }
 
 
+/**
+ * terminate - garbage collection on exit
+ */
+function terminate() {
+	t.murder(eventHandlers.cb);
+}
+
+
+
+
+// Loading sequence
 initTamagotchi(eventHandlers.cb)
 	.then((tamagotchi) => {
 		t = tamagotchi;
@@ -53,18 +71,16 @@ initTamagotchi(eventHandlers.cb)
 	})
 	.then(welcome);
 
-function terminate() {
-	t.murder(eventHandlers.cb);
-}
 
+// Initialise command line server to handle input
 var replServer = repl.start({ prompt: 'Tamagotchi > ' })
-	.rli.on('close', terminate); //"Adopting it out" - Make sure to terminate Tamagotchi heartbeat callback on close.
+	.rli.on('close', terminate); 							//"Adopting it out" - Make sure to terminate Tamagotchi heartbeat callback on close.
 
 
 
 /**
+* Stiching:
 * Attach commands to REPL context.
-* TODO: Add Error handling and prompts.
 **/
 replServer.context.feed = () => {t.feed(eventHandlers.cb);};
 replServer.context.help = () => {console.log(instructions);};
