@@ -67,7 +67,7 @@ var __state = {
 * Rate of change for Tamagotchi on each heartbeat
 **/
 const updateModifiers = {
-	'hunger':20,
+	'hunger':2,
 	'tiredness':10,
 	'bladder':2,
 	'age':0.5

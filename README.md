@@ -11,32 +11,18 @@ Built by Owen Smith
 - Capable of aging from birth through to death
 
 ### Out-of-scope
-- Add decimal-safe numbers
+- Persistent state storage
+- Entertain/play with Tamagotchi
 
 ## Backlog
-- Set up handling for conflicting writes (eg. Update routine overwriting a new command)
-- Add error handling and prompts
-- Enforce return in server.js
+- Concurrency: Set up handling for conflicting writes (eg. Update routine overwriting a new command)
 - Name the Tamagotchi
-- Handle DB Promise messages and resolution within Tamagotchi
-- Create Set function
-- Refactor Ternary operators in Tamagotchi
-- Name propagation.
-- Rewrite Tamagotchi state management to ensure that death terminates state update flow.
-- Update put to bed function to include an error when Tamagotchi is already awake!
-- Fix feeding whilst asleep and not hungry bug.
-- "losing health from hunger!"
+- Update put to bed function to include an error when Tamagotchi is already awake
 - Age states
 - Move config to config.json.
 - Update Architecture diagram with DBFacade
 - Update DB with death note.
-- Check for death state.
-
-
-### Wishlist
-- Persistent state storage
-- Idempotency
-- Rework base data structure for future extensibility
+- Decimal safe numbers.
 
 ## Introduction
 Javascript - Node.JS 
